@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FixIt - Report Damage</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    </head>
+
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+            <img src="FixIt_Logo.png" alt="FixIt Logo">
+            
+        </div>
+
+        <button class="sidebar-menu-btn">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <nav>
+
+            <a href="userdb.html" class="nav-item">
+                Dashboard
+            </a>
+
+            <a href="report-damage.html" class="nav-item active">
+                Report Damage
+            </a>
+
+            <a href="#" class="nav-item">
+                My Report
+            </a>
+
+            <a href="#" class="nav-item">
+                Track Status
+            </a>
+
+        </nav>
+
+        <div class="sidebar-spacer"></div>
+
+        <a href="#" class="nav-item">
+            Logout
+        </a>
+
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+
+        <header class="topbar">
+
+            <h1 class="topbar-title">
+                REPORT DAMAGE
+            </h1>
+
+            <div class="topbar-actions">
+
+                <button class="icon-btn">
+                    🔔
+                    <span class="notif-dot"></span>
+                </button>
+
+                <div class="avatar">
+                    M
+                </div>
+
+            </div>
+
+        </header>
+
+        <!-- Report Damage Form -->
+        <div class="report-page">
+
+            <div class="report-form-wrapper">
+
+                <h2 class="report-heading">REPORT DAMAGE</h2>
+                <p class="report-subtext">Please fill out the form below to report a damage issue.</p>
+
+                <div class="report-form-card">
+
+                    <div class="form-group">
+                        <label>Issue Title</label>
+                        <input type="text" placeholder="Enter issue title.">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea placeholder="Describe the issue in detail..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Location</label>
+                        <input type="text" placeholder="Enter location.">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Upload Photo (Optional)</label>
+                        <div class="upload-area">
+                            <div class="upload-icon">⬆</div>
+                            <p>select your file or drag and drop</p>
+                            <small>png, pdf, jpg, docx accepted</small>
+                            <button class="browse-btn">browse</button>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button class="btn-cancel">CANCEL</button>
+                        <button class="btn-submit">SUBMIT REPORT</button>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Illustration -->
+            <div class="report-illustration">
+                <div class="warning-icon">⚠️</div>
+                <!-- Replace illustration.png with your actual image file -->
+                <img src="fixIllusion.png" alt="Report illustration" onerror="this.style.display='none'">
+            </div>
+
+        </div>
+
+    </main>
+
+</body>
+</html>
