@@ -32,7 +32,7 @@
                 Dashboard
             </a>
 
-            <a href="report-damage.html" class="nav-item active">
+            <a href="reportdamage.php" class="nav-item active">
                 Report Damage
             </a>
 
@@ -86,11 +86,12 @@
                 <h2 class="report-heading">REPORT DAMAGE</h2>
                 <p class="report-subtext">Please fill out the form below to report a damage issue.</p>
 
+                <form action="submit_report.php" method="POST" enctype="multipart/form-data">
                 <div class="report-form-card">
 
                     <div class="form-group">
                         <label>Issue Title</label>
-                        <input type="text" placeholder="Enter issue title.">
+                        <input type="text" name="title" placeholder="Enter issue title.">
                     </div>
 
                     <div class="form-group">
@@ -100,7 +101,7 @@
 
                     <div class="form-group">
                         <label>Location</label>
-                        <input type="text" placeholder="Enter location.">
+                        <input type="text" name="location" placeholder="Enter location.">
                     </div>
 
                     <div class="form-group">
@@ -119,7 +120,7 @@
                     </div>
 
                 </div>
-
+                </form>
             </div>
 
             <!-- Illustration -->

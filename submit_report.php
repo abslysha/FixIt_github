@@ -14,7 +14,7 @@ if (!empty($_FILES['photo']['name'])) {
 }
 
 $stmt = $conn->prepare("INSERT INTO report (description, location, attachment, userID, status) VALUES (?, ?, ?, ?, ?)");
-$stmt->execute([$desciption, $location, $attachment, $user_id,]);
+$stmt->execute([$desciption, $location, $attachment, $user_id, 'pending']);
 
 header("Location: userdb.html");
 ?>
