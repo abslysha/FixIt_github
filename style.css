@@ -284,6 +284,34 @@ a{
 }
 
 /* =========================
+   ADD REPORT BUTTON
+========================= */
+
+.add-report-btn {
+    width: 100%;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    padding: 18px 28px;
+    font-size: 16px;
+    font-weight: 700;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    letter-spacing: 1.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    transition: opacity 0.15s;
+}
+
+.add-report-btn:hover {
+    opacity: 0.9;
+}
+
+/* =========================
    CARDS
 ========================= */
 
