@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FixIt - Admin Dashboard</title>
+
+    <link rel="stylesheet" href="admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+            
+        </div>
+
+        <button class="sidebar-menu-btn">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <nav>
+
+            <a href="dashboard.html" class="nav-item active">
+                Dashboard
+            </a>
+
+            <a href="report-data.html" class="nav-item">
+                Report Data
+            </a>
+
+            <a href="#" class="nav-item">
+                User Management
+            </a>
+
+            <a href="#" class="nav-item">
+                Assign Task
+            </a>
+
+        </nav>
+
+        <div class="sidebar-spacer"></div>
+
+        <a href="#" class="nav-item">
+            Logout
+        </a>
+
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+
+        <header class="topbar">
+
+            <h1 class="topbar-title">
+                <em>ADMIN</em> DASHBOARD
+            </h1>
+
+            <div class="topbar-actions">
+
+                <button class="icon-btn">
+                    🔔
+                    <span class="notif-dot"></span>
+                </button>
+
+                <div class="avatar">
+                    M
+                </div>
+
+            </div>
+
+        </header>
+
+        <!-- Statistics -->
+        <section class="stat-cards">
+
+            <div class="stat-card blue">
+                <div class="stat-info">
+                    <span class="stat-label">Total Reports</span>
+                    <span class="stat-value">0</span>
+                </div>
+            </div>
+
+            <div class="stat-card yellow">
+                <div class="stat-info">
+                    <span class="stat-label">Pending</span>
+                    <span class="stat-value">0</span>
+                </div>
+            </div>
+
+            <div class="stat-card pink">
+                <div class="stat-info">
+                    <span class="stat-label">In Progress</span>
+                    <span class="stat-value">0</span>
+                </div>
+            </div>
+
+            <div class="stat-card green">
+                <div class="stat-info">
+                    <span class="stat-label">Completed</span>
+                    <span class="stat-value">0</span>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Charts -->
+        <section class="charts-row">
+
+            <div class="card">
+                <h3 class="card-title">
+                    Daily Reports Submitted (Last 30 Days)
+                </h3>
+
+                <div class="chart-placeholder">
+                    Daily Report Chart
+                </div>
+            </div>
+
+            <div class="card">
+
+                <h3 class="card-title">
+                    Report Status Overview
+                </h3>
+
+                <div class="status-summary">
+
+                    <div class="legend-item">
+                        <span class="legend-dot yellow"></span>
+                        Pending (0%)
+                    </div>
+
+                    <div class="legend-item">
+                        <span class="legend-dot pink"></span>
+                        In Progress (0%)
+                    </div>
+
+                    <div class="legend-item">
+                        <span class="legend-dot green"></span>
+                        Completed (0%)
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Recent Reports -->
+        <section class="table-card">
+
+            <div class="table-controls">
+
+                <div class="show-entries">
+                    Show
+                    <select>
+                        <option>10</option>
+                        <option>25</option>
+                        <option>50</option>
+                    </select>
+                    entries
+                </div>
+
+                <div class="search-box">
+                    <input type="text" placeholder="Search">
+                </div>
+
+            </div>
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Location</th>
+                        <th>Issue</th>
+                        <th>Assigned To</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+    </main>
+
+</body>
+</html>
