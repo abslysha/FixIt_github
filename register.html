@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FixIt Register</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="browser">
+
+        <!-- LEFT PANEL -->
+
+        <div class="left-panel">
+
+            <div class="branding">
+
+                <img src="FixIt_Logo.png"
+                     alt="FixIt Logo"
+                     class="logo">
+
+                <div class="logo-text">
+
+                    <h3>FixIt</h3>
+
+                    <p>
+                        FACULTY DAMAGE<br>
+                        REPORTING SYSTEM
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="tagline">
+
+                Report and track<br>
+                damage issues easily<br>
+                at your faculty
+
+            </div>
+
+        
+            <!-- Worker Illustration -->
+
+            <img src="worker.png"
+                 alt="Worker"
+                 class="worker">
+
+        </div>
+
+        <!-- RIGHT PANEL -->
+
+      <div class="right-panel">
+
+    <h1>Create Account</h1>
+
+    <form>
+
+        <label>Email</label>
+
+        <input
+            type="email"
+            placeholder="Enter your email">
+
+        <label>Register as</label>
+
+        <select>
+            <option>Select Role</option>
+            <option>User</option>
+            <option>Maintenance</option>
+            <option>Administrator</option>
+        </select>
+
+        <label>Password</label>
+
+        <div class="password-wrapper">
+
+            <input
+                type="password"
+                id="password"
+                placeholder="Enter your password">
+
+            <span class="eye"
+                onclick="togglePassword()">
+                👁
+            </span>
+
+        </div>
+
+        <label>Confirm Password</label>
+
+        <div class="password-wrapper">
+
+            <input
+                type="password"
+                id="confirmPassword"
+                placeholder="Confirm your password">
+
+            <span class="eye"
+                onclick="toggleConfirmPassword()">
+                👁
+            </span>
+
+        </div>
+
+        <div class="remember-container">
+
+            <input type="checkbox">
+
+            <span>Remember Me</span>
+
+        </div>
+
+        <button
+            type="submit"
+            class="register-btn">
+
+            Register
+
+        </button>
+
+        <div class="login-link">
+
+            Already have an account?
+
+            <a href="login.html">
+                Login
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+           
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
