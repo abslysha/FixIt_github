@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FixIt - My Report</title>
+    <title>FixIt - User Dashboard</title>
 
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -16,6 +16,7 @@
 
         <div class="sidebar-logo">
             <img src="FixIt_Logo.png" alt="FixIt Logo">
+
         </div>
 
         <button class="sidebar-menu-btn">
@@ -26,7 +27,7 @@
 
         <nav>
 
-            <a href="userdb.html" class="nav-item">
+            <a href="userdb.html" class="nav-item active">
                 Dashboard
             </a>
 
@@ -34,11 +35,11 @@
                 Report Damage
             </a>
 
-            <a href="myreport.html" class="nav-item active">
+            <a href="#" class="nav-item">
                 My Report
             </a>
 
-            <a href="trackstatus.html" class="nav-item">
+            <a href="#" class="nav-item">
                 Track Status
             </a>
 
@@ -52,13 +53,13 @@
 
     </aside>
 
-    <!-- Main -->
+    <!-- Main Content -->
     <main class="main">
 
         <header class="topbar">
 
             <h1 class="topbar-title">
-                <em>MY</em> REPORT
+                <em>USER</em> DASHBOARD
             </h1>
 
             <div class="topbar-actions">
@@ -76,40 +77,48 @@
 
         </header>
 
+        <!-- Add Report Button -->
+        <section class="add-report-section">
+            <button class="add-report-btn">
+                <span style="font-size: 20px; font-weight: 300;">+</span>
+                 ADD REPORT DAMAGE
+            </button>
+        </section>
+
         <!-- Statistics -->
         <section class="stat-cards">
 
             <div class="stat-card blue">
                 <div class="stat-info">
                     <span class="stat-label">My Reports</span>
-                    <span class="stat-value">6</span>
+                    <span class="stat-value">0</span>
                 </div>
             </div>
 
             <div class="stat-card yellow">
                 <div class="stat-info">
                     <span class="stat-label">Pending</span>
-                    <span class="stat-value">1</span>
+                    <span class="stat-value">0</span>
                 </div>
             </div>
 
             <div class="stat-card pink">
                 <div class="stat-info">
                     <span class="stat-label">In Progress</span>
-                    <span class="stat-value">2</span>
+                    <span class="stat-value">0</span>
                 </div>
             </div>
 
             <div class="stat-card green">
                 <div class="stat-info">
                     <span class="stat-label">Completed</span>
-                    <span class="stat-value">3</span>
+                    <span class="stat-value">0</span>
                 </div>
             </div>
 
         </section>
 
-        <!-- Reports Table -->
+        <!-- Recent Reports -->
         <section class="table-card">
 
             <div class="table-controls">
@@ -134,7 +143,7 @@
 
                 <thead>
                     <tr>
-                        <th>Report ID</th>
+                        <th>Name</th>
                         <th>Location</th>
                         <th>Issue</th>
                         <th>Status</th>
@@ -144,29 +153,7 @@
 
                 <tbody>
 
-                    <tr>
-                        <td>#001</td>
-                        <td>Library</td>
-                        <td>Broken Chair</td>
-                        <td>Completed</td>
-                        <td>01/06/2026</td>
-                    </tr>
-
-                    <tr>
-                        <td>#002</td>
-                        <td>Lab A</td>
-                        <td>Projector Damage</td>
-                        <td>Pending</td>
-                        <td>03/06/2026</td>
-                    </tr>
-
-                    <tr>
-                        <td>#003</td>
-                        <td>Cafeteria</td>
-                        <td>Water Leakage</td>
-                        <td>In Progress</td>
-                        <td>05/06/2026</td>
-                    </tr>
+                    
 
                 </tbody>
 
