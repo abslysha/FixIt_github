@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FixIt - User Dashboard</title>
+    <title>FixIt - Admin Dashboard</title>
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin.css">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
+    <!-- Sidebar -->
     <aside class="sidebar">
 
         <div class="sidebar-logo">
-            <img src="FixIt_Logo.png" alt="FixIt Logo">
+            
         </div>
 
         <button class="sidebar-menu-btn">
@@ -24,39 +25,44 @@
         </button>
 
         <nav>
-            <a href="userdb.html" class="nav-item active">
+
+            <a href="dashboard.html" class="nav-item active">
                 Dashboard
             </a>
 
-            <a href="reportdamage.php" class="nav-item">
-                Report Damage
+            <a href="report-data.html" class="nav-item">
+                Report Data
             </a>
 
-            <a href="myreports.php" class="nav-item">
-                My Reports
+            <a href="#" class="nav-item">
+                User Management
             </a>
 
-            <a href="trackstatus.php" class="nav-item">
-                Track Status
+            <a href="#" class="nav-item">
+                Assign Task
             </a>
+
         </nav>
 
         <div class="sidebar-spacer"></div>
 
-        <a href="logout.php" class="nav-item">
+        <a href="#" class="nav-item">
             Logout
         </a>
 
     </aside>
 
+    <!-- Main Content -->
     <main class="main">
 
         <header class="topbar">
+
             <h1 class="topbar-title">
-                <em>USER</em> DASHBOARD
+                <em>ADMIN</em> DASHBOARD
             </h1>
 
             <div class="topbar-actions">
+
                 <button class="icon-btn">
                     🔔
                     <span class="notif-dot"></span>
@@ -65,22 +71,17 @@
                 <div class="avatar">
                     M
                 </div>
+
             </div>
+
         </header>
 
-        <section class="add-report-section">
-            <a href="reportdamage.php" style="text-decoration: none;">
-                <button class="add-report-btn">
-                    <span style="font-size: 20px; font-weight: 300;">+</span>
-                     ADD REPORT DAMAGE
-                </button>
-            </a>
-        </section>
-
+        <!-- Statistics -->
         <section class="stat-cards">
+
             <div class="stat-card blue">
                 <div class="stat-info">
-                    <span class="stat-label">My Reports</span>
+                    <span class="stat-label">Total Reports</span>
                     <span class="stat-value">0</span>
                 </div>
             </div>
@@ -105,12 +106,58 @@
                     <span class="stat-value">0</span>
                 </div>
             </div>
+
         </section>
 
+        <!-- Charts -->
+        <section class="charts-row">
+
+            <div class="card">
+                <h3 class="card-title">
+                    Daily Reports Submitted (Last 30 Days)
+                </h3>
+
+                <div class="chart-placeholder">
+                    Daily Report Chart
+                </div>
+            </div>
+
+            <div class="card">
+
+                <h3 class="card-title">
+                    Report Status Overview
+                </h3>
+
+                <div class="status-summary">
+
+                    <div class="legend-item">
+                        <span class="legend-dot yellow"></span>
+                        Pending (0%)
+                    </div>
+
+                    <div class="legend-item">
+                        <span class="legend-dot pink"></span>
+                        In Progress (0%)
+                    </div>
+
+                    <div class="legend-item">
+                        <span class="legend-dot green"></span>
+                        Completed (0%)
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Recent Reports -->
         <section class="table-card">
+
             <div class="table-controls">
+
                 <div class="show-entries">
-                    Show 
+                    Show
                     <select>
                         <option>10</option>
                         <option>25</option>
@@ -122,28 +169,30 @@
                 <div class="search-box">
                     <input type="text" placeholder="Search">
                 </div>
+
             </div>
 
             <table>
+
                 <thead>
                     <tr>
                         <th>Name</th>
                         <th>Location</th>
                         <th>Issue</th>
+                        <th>Assigned To</th>
                         <th>Status</th>
                         <th>Date</th>
                     </tr>
                 </thead>
+
                 <tbody>
-                    <tr>
-                        <td>John Doe</td>
-                        <td>123 Main St</td>
-                        <td>Broken Window</td>
-                        <td>Pending</td>
-                        <td>2023-05-15</td>
-                    </tr>
+
+                    
+
                 </tbody>
+
             </table>
+
         </section>
 
     </main>

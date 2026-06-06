@@ -1,4 +1,6 @@
-/* ROOT VARIABLES */
+/* =========================
+   ROOT VARIABLES
+========================= */
 
 :root{
     --sidebar-bg:#1e3a5f;
@@ -24,7 +26,9 @@
     --radius:14px;
 }
 
-/* RESET */
+/* =========================
+   RESET
+========================= */
 
 *{
     margin:0;
@@ -44,9 +48,9 @@ a{
     text-decoration:none;
 }
 
-
-
- /*SIDEBAR*/
+/* =========================
+   SIDEBAR
+========================= */
 
 .sidebar{
     width:120px;
@@ -80,12 +84,6 @@ a{
     margin-bottom:20px;
 }
 
-.sidebar-logo img {
-    width:100%;
-    height: 100%;
-    object-fit:cover;
-    border-radius: 14px;
-}
 .sidebar-menu-btn{
     border:none;
     background:none;
@@ -144,9 +142,9 @@ a{
     color:white;
 }
 
-
-
- /*MAIN*/
+/* =========================
+   MAIN
+========================= */
 
 .main{
     flex:1;
@@ -154,7 +152,9 @@ a{
     padding:28px 32px;
 }
 
- /* TOPBAR */
+/* =========================
+   TOPBAR
+========================= */
 
 .topbar{
     display:flex;
@@ -229,7 +229,9 @@ a{
     font-weight:700;
 }
 
- /* DASHBOARD CARDS */
+/* =========================
+   DASHBOARD CARDS
+========================= */
 
 .stat-cards{
     display:grid;
@@ -281,38 +283,9 @@ a{
     font-family:'Bebas Neue',sans-serif;
 }
 
- /* ADD REPORT DAMAGE PAGE */
-
-.add-report-btn {
-    width: 100%;
-    background: var(--primary);
-    color: white;
-    border: none;
-    border-radius: var(--radius);
-    padding: 18px 28px;
-    font-size: 16px;
-    font-weight: 700;
-    font-family: 'DM Sans', sans-serif;
-    cursor: pointer;
-    letter-spacing: 1.5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    margin-bottom: 24px;
-    transition: opacity 0.15s;
-}
-
-a.add-report-btn {
-    display: flex;
-    text-decoration: none;
-}
-
-.add-report-btn:hover {
-    opacity: 0.9;
-}
-
- /* CARDS */
+/* =========================
+   CARDS
+========================= */
 
 .card,
 .table-card{
@@ -363,7 +336,9 @@ a.add-report-btn {
     margin-bottom:24px;
 }
 
-/* STATUS LEGEND */
+/* =========================
+   STATUS LEGEND
+========================= */
 
 .status-summary{
     display:flex;
@@ -395,7 +370,9 @@ a.add-report-btn {
     background:#5cb85c;
 }
 
- /* TABLES */
+/* =========================
+   TABLE
+========================= */
 
 .table-controls{
     display:flex;
@@ -465,7 +442,9 @@ tbody tr:hover{
     background:#f7f9fc;
 }
 
- /* BADGES */
+/* =========================
+   BADGES
+========================= */
 
 .status-badge{
     display:inline-block;
@@ -493,7 +472,9 @@ tbody tr:hover{
     color:var(--status-blue);
 }
 
- /* FOOTER TABLE */
+/* =========================
+   FOOTER TABLE
+========================= */
 
 .table-footer{
     display:flex;
@@ -536,7 +517,9 @@ tbody tr:hover{
     color:white;
 }
 
- /* RESPONSIVE */
+/* =========================
+   RESPONSIVE
+========================= */
 
 @media(max-width:992px){
 
@@ -575,7 +558,9 @@ tbody tr:hover{
         width:100%;
     }
 
-   /* ASSIGN TASK FORM */
+    /* =========================
+   ASSIGN TASK FORM
+========================= */
 
 .assign-form{
     display:flex;
@@ -636,203 +621,4 @@ tbody tr:hover{
     opacity:.9;
 }
 
-}
-
-/* REPORT DAMAGE PAGE */
-
-.report-page {
-    display: flex;
-    gap: 32px;
-    align-items: flex-start;
-}
-
-.report-form-wrapper {
-    flex: 1;
-}
-
-.report-heading {
-    font-family: 'Courier New', monospace;
-    font-size: 30px;
-    font-weight: 700;
-    color: var(--primary);
-    border-bottom: 2px solid var(--teal);
-    padding-bottom: 4px;
-    display: inline-block;
-    margin-bottom: 6px;
-    letter-spacing: 2px;
-}
-
-.report-subtext {
-    font-size: 13px;
-    color: var(--teal);
-    margin-bottom: 20px;
-    font-family: 'Courier New', monospace;
-}
-
-.report-form-card {
-    background: #dce3f5;
-    border-radius: var(--radius);
-    padding: 28px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.form-group label {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text);
-    font-family: 'Courier New', monospace;
-}
-
-.form-group input,
-.form-group textarea {
-    padding: 11px 14px;
-    border: 1px solid #c5cedf;
-    border-radius: 8px;
-    background: white;
-    font-family: 'Courier New', monospace;
-    font-size: 13px;
-    color: var(--text);
-    outline: none;
-    transition: border-color 0.2s;
-}
-
-.form-group input:focus,
-.form-group textarea:focus {
-    border-color: var(--teal);
-}
-
-.form-group input::placeholder,
-.form-group textarea::placeholder {
-    color: #aab0be;
-}
-
-.form-group textarea {
-    resize: vertical;
-    min-height: 130px;
-}
-
-.upload-area {
-    border: 2px dashed #a0aec0;
-    border-radius: 10px;
-    background: white;
-    padding: 24px 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    cursor: pointer;
-    transition: border-color 0.2s;
-    width: 220px;
-}
-
-.upload-area:hover {
-    border-color: var(--teal);
-}
-
-.upload-icon {
-    font-size: 28px;
-    color: var(--teal);
-}
-
-.upload-area p {
-    font-size: 12px;
-    color: var(--text);
-    font-family: 'Courier New', monospace;
-    text-align: center;
-}
-
-.upload-area small {
-    font-size: 10px;
-    color: var(--text-muted);
-    font-family: 'Courier New', monospace;
-}
-
-.browse-btn {
-    background: var(--teal);
-    color: white;
-    border: none;
-    border-radius: 6px;
-    padding: 6px 18px;
-    font-size: 13px;
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 600;
-    cursor: pointer;
-    margin-top: 4px;
-    transition: opacity 0.15s;
-}
-
-.browse-btn:hover {
-    opacity: 0.85;
-}
-
-.form-actions {
-    display: flex;
-    gap: 14px;
-    justify-content: flex-end;
-    margin-top: 6px;
-}
-
-.btn-cancel {
-    background: #e53e3e;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 13px 32px;
-    font-size: 14px;
-    font-weight: 700;
-    font-family: 'DM Sans', sans-serif;
-    letter-spacing: 1px;
-    cursor: pointer;
-    transition: opacity 0.15s;
-}
-
-.btn-cancel:hover {
-    opacity: 0.88;
-}
-
-.btn-submit {
-    background: var(--primary);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 13px 32px;
-    font-size: 14px;
-    font-weight: 700;
-    font-family: 'DM Sans', sans-serif;
-    letter-spacing: 1px;
-    cursor: pointer;
-    transition: opacity 0.15s;
-}
-
-.btn-submit:hover {
-    opacity: 0.88;
-}
-
-.report-illustration {
-    width: 260px;
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding-top: 60px;
-    gap: 12px;
-}
-
-.warning-icon {
-    font-size: 54px;
-    line-height: 1;
-}
-
-.report-illustration img {
-    width: 100%;
-    max-width: 240px;
 }

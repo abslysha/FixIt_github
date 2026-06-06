@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FixIt - Assign Task</title>
+
+<link rel="stylesheet" href="admin.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<aside class="sidebar">
+
+    <div class="sidebar-logo">
+        FIXIT
+    </div>
+
+    <button class="sidebar-menu-btn">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <nav>
+
+        <a href="dashboard.html" class="nav-item">
+            Dashboard
+        </a>
+
+        <a href="report-data.html" class="nav-item">
+            Report Data
+        </a>
+
+        <a href="user-management.html" class="nav-item">
+            User Management
+        </a>
+
+        <a href="assign-task.html" class="nav-item active">
+            Assign Task
+        </a>
+
+    </nav>
+
+    <div class="sidebar-spacer"></div>
+
+    <a href="#" class="nav-item">
+        Logout
+    </a>
+
+</aside>
+
+<main class="main">
+
+    <header class="topbar">
+
+        <h1 class="topbar-title">
+            ASSIGN TASK
+        </h1>
+
+        <div class="topbar-actions">
+
+            <button class="icon-btn">
+                🔔
+                <span class="notif-dot"></span>
+            </button>
+
+            <div class="avatar">M</div>
+
+        </div>
+
+    </header>
+
+    <section class="table-card">
+
+        <h3 style="margin-bottom:20px;">
+            Assign Maintenance Task
+        </h3>
+
+        <form class="assign-form">
+
+            <div class="form-group">
+
+                <label>Report ID</label>
+
+                <input
+                    type="text"
+                    placeholder="Enter Report ID"
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Issue</label>
+
+                <input
+                    type="text"
+                    placeholder="Issue Description"
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Assign To</label>
+
+                <select>
+
+                    <option>Select Technician</option>
+
+                    <option>Ravi</option>
+                    <option>Raj</option>
+                    <option>Priya</option>
+
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Priority</label>
+
+                <select>
+
+                    <option>Low</option>
+                    <option>Medium</option>
+                    <option>High</option>
+
+                </select>
+
+            </div>
+
+            <button
+                type="submit"
+                class="submit-btn">
+
+                Assign Task
+
+            </button>
+
+        </form>
+
+    </section>
+
+</main>
+
+</body>
+</html>

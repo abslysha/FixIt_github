@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FixIt - User Dashboard</title>
+    <title>FixIt - Report Data</title>
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin.css">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
@@ -15,8 +15,7 @@
     <aside class="sidebar">
 
         <div class="sidebar-logo">
-            <img src="FixIt_Logo.png" alt="FixIt Logo">
-
+            FIXIT
         </div>
 
         <button class="sidebar-menu-btn">
@@ -27,20 +26,20 @@
 
         <nav>
 
-            <a href="userdb.html" class="nav-item active">
+            <a href="dashboard.html" class="nav-item">
                 Dashboard
             </a>
 
-            <a href="reportdamage.php" class="nav-item">
-                Report Damage
+            <a href="report-data.html" class="nav-item active">
+                Report Data
             </a>
 
-            <a href="#" class="nav-item">
-                My Report
+            <a href="user-management.html" class="nav-item">
+                User Management
             </a>
 
-            <a href="#" class="nav-item">
-                Track Status
+            <a href="assign-task.html" class="nav-item">
+                Assign Task
             </a>
 
         </nav>
@@ -59,7 +58,7 @@
         <header class="topbar">
 
             <h1 class="topbar-title">
-                <em>USER</em> DASHBOARD
+                REPORT DATA
             </h1>
 
             <div class="topbar-actions">
@@ -77,64 +76,28 @@
 
         </header>
 
-        <!-- Add Report Button -->
-        <section class="add-report-section">
-            <button class="add-report-btn">
-                <span style="font-size: 20px; font-weight: 300;">+</span>
-                 ADD REPORT DAMAGE
-            </button>
-        </section>
-
-        <!-- Statistics -->
-        <section class="stat-cards">
-
-            <div class="stat-card blue">
-                <div class="stat-info">
-                    <span class="stat-label">My Reports</span>
-                    <span class="stat-value">0</span>
-                </div>
-            </div>
-
-            <div class="stat-card yellow">
-                <div class="stat-info">
-                    <span class="stat-label">Pending</span>
-                    <span class="stat-value">0</span>
-                </div>
-            </div>
-
-            <div class="stat-card pink">
-                <div class="stat-info">
-                    <span class="stat-label">In Progress</span>
-                    <span class="stat-value">0</span>
-                </div>
-            </div>
-
-            <div class="stat-card green">
-                <div class="stat-info">
-                    <span class="stat-label">Completed</span>
-                    <span class="stat-value">0</span>
-                </div>
-            </div>
-
-        </section>
-
-        <!-- Recent Reports -->
         <section class="table-card">
 
             <div class="table-controls">
 
                 <div class="show-entries">
                     Show
-                    <select>
+
+                    <select id="entries">
                         <option>10</option>
                         <option>25</option>
                         <option>50</option>
                     </select>
+
                     entries
                 </div>
 
                 <div class="search-box">
-                    <input type="text" placeholder="Search">
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Search report..."
+                    >
                 </div>
 
             </div>
@@ -151,17 +114,72 @@
                     </tr>
                 </thead>
 
-                <tbody>
-
-                    
+                <tbody id="reportTable">
 
                 </tbody>
 
             </table>
 
+            <div class="table-footer">
+
+                <span>
+                    Showing 1 to 10 of 430 entries
+                </span>
+
+                <div class="pagination">
+
+                    <button class="page-btn">
+                        Previous
+                    </button>
+
+                    <button class="page-btn active">
+                        1
+                    </button>
+
+                    <button class="page-btn">
+                        2
+                    </button>
+
+                    <button class="page-btn">
+                        3
+                    </button>
+
+                    <button class="page-btn">
+                        Next
+                    </button>
+
+                </div>
+
+            </div>
+
         </section>
 
     </main>
+
+    <script>
+        const searchInput =
+            document.getElementById("searchInput");
+
+        searchInput.addEventListener("keyup", function () {
+
+            let filter =
+                searchInput.value.toLowerCase();
+
+            let rows =
+                document.querySelectorAll("#reportTable tr");
+
+            rows.forEach(row => {
+
+                row.style.display =
+                    row.innerText.toLowerCase()
+                    .includes(filter)
+                    ? ""
+                    : "none";
+
+            });
+
+        });
+    </script>
 
 </body>
 </html>
