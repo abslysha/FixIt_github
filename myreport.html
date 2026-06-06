@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Dashboard - FixIt</title>
+    <link rel="stylesheet" href="userstyles.css">
+
+</head>
+<body>
+    <div class="container">
+
+        <aside class="sidebar">
+            <h2>USER DASHBOARD</h2>
+            <ul>
+                <Li><a href="userdb.html">Dashboard</a></Li>
+                <Li><a href="userreport.html">Report Damage</a></Li>
+                <Li><a href="myreports.html">My Reports</a></Li>
+                <Li><a href="trackstatus.html">Track Status</a></Li>
+                <Li><a href="logout.html">Logout</a></Li>
+            </ul>
+        </aside>
+
+<div class="container">
+
+    <!-- Main Content -->
+    <div class="content">
+
+        <div class="header">
+            <h2>MY REPORT</h2>
+        </div>
+
+        <!-- Statistics -->
+        <div class="cards">
+
+            <div class="card blue">
+                <h4>My Reports</h4>
+                <span>6</span>
+            </div>
+
+            <div class="card yellow">
+                <h4>Pending</h4>
+                <span>1</span>
+            </div>
+
+            <div class="card pink">
+                <h4>In Progress</h4>
+                <span>2</span>
+            </div>
+
+            <div class="card green">
+                <h4>Completed</h4>
+                <span>3</span>
+            </div>
+
+        </div>
+
+        <!-- Table -->
+        <table>
+
+            <tr>
+                <th>ID</th>
+                <th>Location</th>
+                <th>Issue</th>
+                <th>Status</th>
+                <th>Date</th>
+            </tr>
+
+            <tr>
+                <td>#0123</td>
+                <td>Multimedia Block</td>
+                <td>Aircond Leaking</td>
+                <td class="completed">Completed</td>
+                <td>20 Apr 2025</td>
+            </tr>
+
+            <tr>
+                <td>#0124</td>
+                <td>Lab C</td>
+                <td>Light Damage</td>
+                <td class="progress">In Progress</td>
+                <td>25 Apr 2025</td>
+            </tr>
+
+            <tr>
+                <td>#0125</td>
+                <td>Library</td>
+                <td>Broken Chair</td>
+                <td class="pending">Pending</td>
+                <td>30 Apr 2025</td>
+            </tr>
+
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+</html>
