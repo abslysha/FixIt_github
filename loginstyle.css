@@ -187,7 +187,8 @@ label{
 /* INPUTS */
 
 input[type=email],
-input[type=password]{
+input[type=password],
+input[type=text]{
 
     width:100%;
     height:52px;
@@ -242,12 +243,12 @@ input[type=password]{
 .login-btn{
 
     width:100%;
-    height:55px;
+    height: 44px;
     border:none;
-    border-radius:8px;
+    border-radius:6px;
     background:#474BCA;
     color:white;
-    font-size:18px;
+    font-size:15px;
     font-weight:500;
     cursor:pointer;
 }
@@ -337,9 +338,9 @@ select{
 
 .login-link{
 
-    margin-top:15px;
+    margin-top:20px;
     text-align:center;
-    font-size:12px;
+    font-size:14px;
     color:#B0B0B0;
 }
 
