@@ -24,21 +24,21 @@
         </button>
 
         <nav>
-            <a href="userdb.html" class="nav-item active">
-                Dashboard
-            </a>
+            <a href="userdb.html" class="nav-item">
+    Dashboard
+</a>
 
-            <a href="reportdamage.php" class="nav-item">
-                Report Damage
-            </a>
+<a href="reportdamage.html" class="nav-item">
+    Report Damage
+</a>
 
-            <a href="myreports.php" class="nav-item">
-                My Reports
-            </a>
+<a href="myreport.html" class="nav-item">
+    My Report
+</a>
 
-            <a href="trackstatus.php" class="nav-item">
-                Track Status
-            </a>
+<a href="trackstatus.html" class="nav-item active">
+    Track Status
+</a>
         </nav>
 
         <div class="sidebar-spacer"></div>
@@ -49,14 +49,17 @@
 
     </aside>
 
+    <!-- Main -->
     <main class="main">
 
         <header class="topbar">
+
             <h1 class="topbar-title">
-                <em>USER</em> DASHBOARD
+                <em>TRACK</em> STATUS
             </h1>
 
             <div class="topbar-actions">
+
                 <button class="icon-btn">
                     🔔
                     <span class="notif-dot"></span>
@@ -65,7 +68,9 @@
                 <div class="avatar">
                     M
                 </div>
+
             </div>
+
         </header>
 
         <section class="add-report-section">
@@ -108,45 +113,55 @@
         </section>
 
         <section class="table-card">
-            <div class="table-controls">
-                <div class="show-entries">
-                    Show 
-                    <select>
-                        <option>10</option>
-                        <option>25</option>
-                        <option>50</option>
-                    </select>
-                    entries
-                </div>
 
-                <div class="search-box">
-                    <input type="text" placeholder="Search">
-                </div>
+            <div class="track-header">
+
+                <h2>Report #001</h2>
+
+                <span class="status-badge progress">
+                    In Progress
+                </span>
+
             </div>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Location</th>
-                        <th>Issue</th>
-                        <th>Status</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>John Doe</td>
-                        <td>123 Main St</td>
-                        <td>Broken Window</td>
-                        <td>Pending</td>
-                        <td>2023-05-15</td>
-                    </tr>
-                </tbody>
-            </table>
+            <br>
+
+            <p><strong>Location:</strong> </p>
+            <p><strong>Issue:</strong> </p>
+
+            <br>
+
+            <div class="timeline">
+
+                <div class="timeline-item completed">
+                    Report Submitted
+                </div>
+
+                <div class="timeline-item completed">
+                    Under Review
+                </div>
+
+                <div class="timeline-item active-status">
+                    In Progress
+                </div>
+
+                <div class="timeline-item">
+                    Completed
+                </div>
+
+            </div>
+
+            <br>
+
+            <h3>Uploaded Photo</h3>
+
+            <img src="damage.jpg"
+                 alt="Damage Image"
+                 class="track-image">
+
         </section>
 
     </main>
 
 </body>
-</html>
+</html>>

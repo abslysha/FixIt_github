@@ -32,3 +32,37 @@ function toggleConfirmPassword(){
     ? "text"
     : "password";
 }
+
+document.getElementById('registerForm').addEventListener('submit', function(event) {
+    
+    event.preventDefault();
+
+    const selectedRole = document.getElementById('roleDropdown').value;
+
+    if (!selectedRole) {
+        alert("Please select a role before registering.");
+        return;
+    }
+
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+
+    if (password !== confirmPassword) {
+        alert("Passwords do not match!");
+        return;
+    }
+
+    switch (selectedRole) {
+        case 'user':
+            window.location.href = 'userdb.html'; 
+            break;
+        case 'maintenance':
+            window.location.href = 'maintenancedashboard.html'; 
+            break;
+        case 'admin':
+            window.location.href = 'dashboard.html'; 
+            break;
+        default:
+            alert("An error occurred. Please try again.");
+    }
+});
