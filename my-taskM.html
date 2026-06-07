@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FixIt - My Task</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="maintanance.css">
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+            <img src="FixIt_Logo.png" alt="FixIt Logo" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=\'color:white;font-weight:700;font-size:18px;\'>Fi</span>'">
+        </div>
+
+        <nav>
+            <a href="dashboardM.html" class="nav-item">
+                <i class="ti ti-layout-dashboard" style="font-size:20px;display:block;margin-bottom:4px;"></i>
+                Dashboard
+            </a>
+            <a href="my-taskM.html" class="nav-item active">
+                <i class="ti ti-clipboard-list" style="font-size:20px;display:block;margin-bottom:4px;"></i>
+                My Task
+            </a>
+        </nav>
+
+        <div class="sidebar-spacer"></div>
+
+        <a href="#" class="nav-item" style="color:#f5a0a0;">
+            <i class="ti ti-logout" style="font-size:20px;display:block;margin-bottom:4px;"></i>
+            Logout
+        </a>
+
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+
+        <header class="topbar">
+            <h1 class="topbar-title">MY TASK</h1>
+            <div class="topbar-actions">
+                <div class="avatar">M</div>
+            </div>
+        </header>
+
+        <!-- Table -->
+        <div class="table-card">
+
+            <div class="table-controls">
+                <div class="show-entries">
+                    Show
+                    <select id="entriesSelect" onchange="renderTable()">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                    </select>
+                    entries
+                </div>
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search name, email, or etc." oninput="renderTable()">
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:40px;"><input type="checkbox" id="selectAll" onchange="toggleAll(this)"></th>
+                        <th class="sortable" onclick="sortTable('id')" style="cursor:pointer;">Report ID ⇅</th>
+                        <th class="sortable" onclick="sortTable('location')" style="cursor:pointer;">Location ⇅</th>
+                        <th class="sortable" onclick="sortTable('issue')" style="cursor:pointer;">Issue ⇅</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+
+            <div class="table-footer">
+                <span id="entryInfo">Showing 0 to 0 of 0 entries</span>
+                <div class="pagination" id="pagination"></div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script>
+        const allTasks = [
+            { id: '#1043', location: 'BK 3',     issue: 'Broken chair',                 status: 'Completed',   date: '20 Feb 2026' },
+            { id: '#1042', location: 'Lab Game',  issue: 'Lights not working',           status: 'Completed',   date: '25 Feb 2026' },
+            { id: '#1041', location: 'Lab MPD2',  issue: 'WiFi not working',             status: 'Pending',     date: '03 Mar 2026' },
+            { id: '#1040', location: 'BK 5',      issue: 'Air conditioner not working',  status: 'In Progress', date: '08 Mar 2026' },
+            { id: '#1039', location: 'Lab MP2',   issue: 'Short circuit problem',        status: 'Completed',   date: '14 Mar 2026' },
+            { id: '#1038', location: 'Lab MM2',   issue: 'Microphone not functioning',   status: 'Completed',   date: '19 Mar 2026' },
+            { id: '#1037', location: 'Lab MKP3',  issue: 'Flickering lights',            status: 'Completed',   date: '24 Mar 2026' },
+            { id: '#1036', location: 'Lab MR1',   issue: 'Computer cannot turn on',      status: 'Pending',     date: '04 Apr 2026' },
+            { id: '#1035', location: 'Lab MP1',   issue: 'Power socket not functioning', status: 'Completed',   date: '10 Apr 2026' },
+            { id: '#1034', location: 'Lab AI 2',  issue: 'Monitor display problem',      status: 'In Progress', date: '12 Apr 2026' },
+            { id: '#1033', location: 'BK 1',      issue: 'Door hinge broken',            status: 'Pending',     date: '15 Apr 2026' },
+            { id: '#1032', location: 'Lab CS1',   issue: 'Projector not displaying',     status: 'Completed',   date: '18 Apr 2026' },
+            { id: '#1031', location: 'Lab MM1',   issue: 'Ceiling fan not working',      status: 'In Progress', date: '20 Apr 2026' },
+        ];
+
+        let currentPage = 1;
+        let sortKey = 'id';
+        let sortAsc = false;
+
+        function badgeClass(s) {
+            if (s === 'Completed')   return 'badge-completed';
+            if (s === 'Pending')     return 'badge-pending';
+            return 'badge-inprogress';
+        }
+
+        function sortTable(key) {
+            if (sortKey === key) sortAsc = !sortAsc;
+            else { sortKey = key; sortAsc = true; }
+            currentPage = 1;
+            renderTable();
+        }
+
+        function toggleAll(cb) {
+            document.querySelectorAll('.row-check').forEach(c => c.checked = cb.checked);
+        }
+
+        function renderTable() {
+            const search  = document.getElementById('searchInput').value.toLowerCase();
+            const entries = parseInt(document.getElementById('entriesSelect').value);
+
+            let filtered = allTasks.filter(t =>
+                t.id.toLowerCase().includes(search) ||
+                t.location.toLowerCase().includes(search) ||
+                t.issue.toLowerCase().includes(search) ||
+                t.status.toLowerCase().includes(search)
+            );
+
+            filtered.sort((a, b) => {
+                const va = a[sortKey] || '', vb = b[sortKey] || '';
+                return sortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
+            });
+
+            const total      = filtered.length;
+            const totalPages = Math.ceil(total / entries) || 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+
+            const start = (currentPage - 1) * entries;
+            const page  = filtered.slice(start, start + entries);
+
+            const tbody = document.getElementById('tableBody');
+            if (page.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#7a869a;padding:2rem;">No records found</td></tr>`;
+            } else {
+                tbody.innerHTML = page.map(t => `
+                    <tr>
+                        <td style="text-align:center;"><input type="checkbox" class="row-check"></td>
+                        <td><strong>${t.id}</strong></td>
+                        <td>${t.location}</td>
+                        <td>${t.issue}</td>
+                        <td><span class="status-badge ${badgeClass(t.status)}">${t.status}</span></td>
+                        <td style="color:#7a869a;">${t.date}</td>
+                    </tr>
+                `).join('');
+            }
+
+            const from = total === 0 ? 0 : start + 1;
+            const to   = Math.min(start + entries, total);
+            document.getElementById('entryInfo').textContent = `Showing ${from} to ${to} of ${total} entries`;
+
+            const pag = document.getElementById('pagination');
+            pag.innerHTML = '';
+
+            const prev = document.createElement('button');
+            prev.className = 'page-btn';
+            prev.textContent = '‹';
+            prev.disabled = currentPage === 1;
+            prev.onclick = () => { currentPage--; renderTable(); };
+            pag.appendChild(prev);
+
+            for (let i = 1; i <= totalPages; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'page-btn' + (i === currentPage ? ' active' : '');
+                btn.textContent = i;
+                btn.onclick = () => { currentPage = i; renderTable(); };
+                pag.appendChild(btn);
+            }
+
+            const next = document.createElement('button');
+            next.className = 'page-btn';
+            next.textContent = '›';
+            next.disabled = currentPage === totalPages;
+            next.onclick = () => { currentPage++; renderTable(); };
+            pag.appendChild(next);
+
+            document.getElementById('selectAll').checked = false;
+        }
+
+        renderTable();
+    </script>
+
+</body>
+</html>
