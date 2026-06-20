@@ -5,7 +5,7 @@ require 'db_connect.php';
 $userID = $_SESSION['user_id'];
 $initial = strtoupper(substr($_SESSION['name'], 0, 1));
  
-// Stats
+// Statistics for the dashboard  
 $totalReports = 0;
 $pending = 0;
 $inProgress = 0;
@@ -24,7 +24,7 @@ while ($row = $statsResult->fetch_assoc()) {
 }
 $statsStmt->close();
  
-// Recent reports (latest 5)
+// Reports list 
 $reportsStmt = $conn->prepare("SELECT reportID, title, description, location, status, DateReported FROM report WHERE userID = ? ORDER BY DateReported DESC LIMIT 5");
 $reportsStmt->bind_param("s", $userID);
 $reportsStmt->execute();
@@ -43,7 +43,6 @@ $reportsResult = $reportsStmt->get_result();
  
 <body>
  
-    <!-- Sidebar -->
     <aside class="sidebar">
  
         <div class="sidebar-logo">
@@ -84,8 +83,7 @@ $reportsResult = $reportsStmt->get_result();
         </a>
  
     </aside>
- 
-    <!-- Main Content -->
+
     <main class="main">
  
         <header class="topbar">
@@ -109,7 +107,6 @@ $reportsResult = $reportsStmt->get_result();
  
         </header>
  
-        <!-- Add Report Button -->
         <section class="add-report-section">
             <a href="reportdamage.php" class="add-report-btn">
                 <span style="font-size: 20px; font-weight: 300;">+</span>
@@ -118,7 +115,6 @@ $reportsResult = $reportsStmt->get_result();
             
         </section>
  
-        <!-- Statistics -->
         <section class="stat-cards">
  
             <div class="stat-card blue">
@@ -151,7 +147,6 @@ $reportsResult = $reportsStmt->get_result();
  
         </section>
  
-        <!-- Recent Reports -->
         <section class="table-card">
  
             <div class="table-controls">
@@ -176,7 +171,7 @@ $reportsResult = $reportsStmt->get_result();
  
                 <thead>
                     <tr>
-                        <th>reportID</th>
+                        <th>Report ID</th>
                         <th>Issue</th>
                         <th>Description</th>
                         <th>Location</th>

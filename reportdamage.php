@@ -16,7 +16,6 @@ $initial = strtoupper(substr($_SESSION['name'], 0, 1));
  
 <body>
  
-    <!-- Sidebar -->
     <aside class="sidebar">
  
         <div class="sidebar-logo">
@@ -57,7 +56,6 @@ $initial = strtoupper(substr($_SESSION['name'], 0, 1));
  
     </aside>
  
-    <!-- Main Content -->
     <main class="main">
  
         <header class="topbar">
@@ -85,7 +83,6 @@ $initial = strtoupper(substr($_SESSION['name'], 0, 1));
             <p style="color:#e53e3e; margin-bottom:16px;">Something went wrong submitting your report. Please try again.</p>
         <?php endif; ?>
  
-        <!-- Report Damage Form -->
         <div class="report-page">
  
             <div class="report-form-wrapper">
@@ -121,15 +118,12 @@ $initial = strtoupper(substr($_SESSION['name'], 0, 1));
                             <small>png, pdf, jpg, docx accepted</small>
                             <button type="button" class="browse-btn" id="browseBtn">browse</button>
  
-                            <!-- Hidden real file input - this is what actually opens the file explorer -->
                             <input type="file" name="photo" id="fileInput" accept=".png,.jpg,.jpeg,.pdf,.docx" hidden>
                         </div>
  
-                        <!-- Dominant preview state (shown after a file is selected) -->
                         <div id="previewBox" style="display:none; position:relative; border-radius:14px; overflow:hidden; border:1px solid #c5cedf;">
                             <img id="imagePreview" src="" alt="Preview" style="display:block; width:100%; max-height:340px; object-fit:cover;">
  
-                            <!-- Non-image fallback (pdf/docx icon card) -->
                             <div id="filePreviewCard" style="display:none; padding:36px 20px; text-align:center; background:#dce3f5;">
                                 <div style="font-size:42px; margin-bottom:8px;">📄</div>
                                 <p id="filePreviewName" style="font-family:'Courier New',monospace; font-size:13px; color:var(--text);"></p>
@@ -152,7 +146,6 @@ $initial = strtoupper(substr($_SESSION['name'], 0, 1));
                 </form>
             </div>
  
-            <!-- Illustration -->
             <div class="report-illustration">
                 <div class="warning-icon">⚠️</div>
                 <img src="fixIllusion.png" alt="Report illustration" onerror="this.style.display='none'">

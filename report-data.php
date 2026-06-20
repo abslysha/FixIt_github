@@ -64,7 +64,7 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
             <table>
                 <thead>
                     <tr>
-                        <th>reportID</th>
+                        <th>Report ID</th>
                         <th>Issue</th>
                         <th>Description</th>
                         <th>Location</th>
@@ -112,7 +112,7 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
         document.getElementById("searchInput").addEventListener("keyup", function () {
             let filter = this.value.toLowerCase();
             document.querySelectorAll("#reportTable tr").forEach(row => {
-                // Skip empty state notification row
+                
                 if(row.cells.length > 1) {
                     row.style.display = row.innerText.toLowerCase().includes(filter) ? "" : "none";
                 }
