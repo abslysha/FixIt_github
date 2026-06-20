@@ -1,3 +1,35 @@
+<?php
+require 'auth_check.php';
+require 'db_connect.php';
+
+$user_id = $_SESSION['user_id'];
+$initial = strtoupper(substr($_SESSION['name'], 0, 1));
+
+// Stats
+$totalReports = 0;
+$pending = 0;
+$inProgress = 0;
+$completed = 0;
+
+$statsStmt = $conn->prepare("SELECT status, COUNT(*) as count FROM reports WHERE user_id = ? GROUP BY status");
+$statsStmt->bind_param("i", $user_id);
+$statsStmt->execute();
+$statsResult = $statsStmt->get_result();
+
+while ($row = $statsResult->fetch_assoc()) {
+    $totalReports += $row['count'];
+    if ($row['status'] === 'Pending') $pending = $row['count'];
+    if ($row['status'] === 'In Progress') $inProgress = $row['count'];
+    if ($row['status'] === 'Completed') $completed = $row['count'];
+}
+$statsStmt->close();
+
+// Recent reports (latest 5)
+$reportsStmt = $conn->prepare("SELECT report_id, title, description, location, status, created_at FROM reports WHERE user_id = ? ORDER BY created_at DESC LIMIT 5");
+$reportsStmt->bind_param("i", $user_id);
+$reportsStmt->execute();
+$reportsResult = $reportsStmt->get_result();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,18 +59,19 @@
 
         <nav>
 
-            <a href="userdb.html" class="nav-item active">
+            <a href="userdb.php" class="nav-item active">
                 Dashboard
             </a>
 
-            <a href="reportdamage.html" class="nav-item">
+            <a href="reportdamage.php" class="nav-item">
                 Report Damage
             </a>
-            
-            <a href="myreport.html" class="nav-item">
-                My Report
 
-            <a href="trackstatus.html" class="nav-item">
+            <a href="myreport.php" class="nav-item">
+                My Report
+            </a>
+
+            <a href="trackstatus.php" class="nav-item">
                 Track Status
             </a>
 
@@ -46,7 +79,7 @@
 
         <div class="sidebar-spacer"></div>
 
-        <a href="login.html" class="nav-item">
+        <a href="logout.php" class="nav-item">
     Logout
 </a>
 
@@ -69,7 +102,7 @@
                 </button>
 
                 <div class="avatar">
-                    M
+                    <?php echo htmlspecialchars($initial); ?>
                 </div>
 
             </div>
@@ -78,7 +111,7 @@
 
         <!-- Add Report Button -->
         <section class="add-report-section">
-            <a href="reportdamage.html" class="add-report-btn">
+            <a href="reportdamage.php" class="add-report-btn">
                 <span style="font-size: 20px; font-weight: 300;">+</span>
                  ADD REPORT DAMAGE
             </a>
@@ -91,28 +124,28 @@
             <div class="stat-card blue">
                 <div class="stat-info">
                     <span class="stat-label">My Reports</span>
-                    <span class="stat-value">0</span>
+                    <span class="stat-value"><?php echo $totalReports; ?></span>
                 </div>
             </div>
 
             <div class="stat-card yellow">
                 <div class="stat-info">
                     <span class="stat-label">Pending</span>
-                    <span class="stat-value">0</span>
+                    <span class="stat-value"><?php echo $pending; ?></span>
                 </div>
             </div>
 
             <div class="stat-card pink">
                 <div class="stat-info">
                     <span class="stat-label">In Progress</span>
-                    <span class="stat-value">0</span>
+                    <span class="stat-value"><?php echo $inProgress; ?></span>
                 </div>
             </div>
 
             <div class="stat-card green">
                 <div class="stat-info">
                     <span class="stat-label">Completed</span>
-                    <span class="stat-value">0</span>
+                    <span class="stat-value"><?php echo $completed; ?></span>
                 </div>
             </div>
 
@@ -154,7 +187,29 @@
 
                 <tbody>
 
-                    
+                    <?php if ($reportsResult->num_rows === 0): ?>
+                        <tr>
+                            <td colspan="6" style="text-align:center; color:#7a869a;">No reports yet.</td>
+                        </tr>
+                    <?php else: ?>
+                        <?php while ($report = $reportsResult->fetch_assoc()): ?>
+                            <tr>
+                                <td>#<?php echo str_pad($report['report_id'], 3, '0', STR_PAD_LEFT); ?></td>
+                                <td><?php echo htmlspecialchars($report['title']); ?></td>
+                                <td><?php echo htmlspecialchars($report['description']); ?></td>
+                                <td><?php echo htmlspecialchars($report['location']); ?></td>
+                                <td><?php echo date('d M Y', strtotime($report['created_at'])); ?></td>
+                                <td>
+                                    <?php
+                                        $badgeClass = 'badge-pending';
+                                        if ($report['status'] === 'In Progress') $badgeClass = 'badge-inprogress';
+                                        if ($report['status'] === 'Completed') $badgeClass = 'badge-completed';
+                                    ?>
+                                    <span class="status-badge <?php echo $badgeClass; ?>"><?php echo $report['status']; ?></span>
+                                </td>
+                            </tr>
+                        <?php endwhile; ?>
+                    <?php endif; ?>
 
                 </tbody>
 
@@ -166,4 +221,3 @@
 
 </body>
 </html>
->
