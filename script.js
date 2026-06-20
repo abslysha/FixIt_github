@@ -57,7 +57,7 @@ document.getElementById('registerForm').addEventListener('submit', function(even
             window.location.href = 'userdb.html'; 
             break;
         case 'maintenance':
-            window.location.href = 'maintenancedashboard.html'; 
+            window.location.href = 'dashboardM.html'; 
             break;
         case 'admin':
             window.location.href = 'dashboard.html'; 
