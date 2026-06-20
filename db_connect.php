@@ -6,7 +6,7 @@
 $host = "localhost";
 $dbUsername = "root";   // default XAMPP username
 $dbPassword = "";       // default XAMPP password is empty
-$dbName = "fixit_db";
+$dbName = "fixit";
 
 $conn = new mysqli($host, $dbUsername, $dbPassword, $dbName);
 
