@@ -52,8 +52,8 @@ $initial = strtoupper(substr($_SESSION['name'], 0, 1));
         <div class="sidebar-spacer"></div>
  
         <a href="login.php" class="nav-item">
-    Logout
-</a>
+            Logout
+        </a>
  
     </aside>
  
@@ -155,7 +155,6 @@ $initial = strtoupper(substr($_SESSION['name'], 0, 1));
             <!-- Illustration -->
             <div class="report-illustration">
                 <div class="warning-icon">⚠️</div>
-                <!-- Replace illustration.png with your actual image file -->
                 <img src="fixIllusion.png" alt="Report illustration" onerror="this.style.display='none'">
             </div>
  

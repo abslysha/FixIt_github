@@ -8,36 +8,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email']);
     $password = $_POST['password'];
  
-    $stmt = $conn->prepare("SELECT user_id, name, password, role FROM users WHERE email = ?");
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    // Check all three tables since accounts are split by role
+    $roleTables = [
+        'admin'       => ['table' => 'admin', 'idCol' => 'adminID'],
+        'maintenance' => ['table' => 'maintenance', 'idCol' => 'staffID'],
+        'user'        => ['table' => 'user', 'idCol' => 'userID'],
+    ];
  
-    if ($result->num_rows === 1) {
-        $user = $result->fetch_assoc();
+    $foundUser = null;
+    $foundRole = null;
  
-        if (password_verify($password, $user['password'])) {
-            $_SESSION['user_id'] = $user['user_id'];
-            $_SESSION['name'] = $user['name'];
-            $_SESSION['role'] = $user['role'];
+    foreach ($roleTables as $role => $info) {
+        $stmt = $conn->prepare("SELECT {$info['idCol']} as id, name, password FROM {$info['table']} WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
  
-            // Redirect based on role
-            if ($user['role'] === 'admin') {
-                header("Location: dashboard.php");
-            } elseif ($user['role'] === 'maintenance') {
-                header("Location: assign-task.php");
-            } else {
-                header("Location: userdb.php");
+        if ($result->num_rows === 1) {
+            $row = $result->fetch_assoc();
+            if (password_verify($password, $row['password'])) {
+                $foundUser = $row;
+                $foundRole = $role;
+                $stmt->close();
+                break;
             }
-            exit();
-        } else {
-            $error = "Incorrect email or password.";
         }
+        $stmt->close();
+    }
+ 
+    if ($foundUser) {
+        $_SESSION['user_id'] = $foundUser['id'];
+        $_SESSION['name'] = $foundUser['name'];
+        $_SESSION['role'] = $foundRole;
+ 
+        if ($foundRole === 'admin') {
+            header("Location: dashboard.php");
+        } elseif ($foundRole === 'maintenance') {
+            header("Location: maintenance-dashboard.php");
+        } else {
+            header("Location: userdb.php");
+        }
+        exit();
     } else {
         $error = "Incorrect email or password.";
     }
- 
-    $stmt->close();
 }
 ?>
 <!DOCTYPE html>

@@ -2,7 +2,7 @@
 require 'auth_check.php';
 require 'db_connect.php';
  
-$user_id = $_SESSION['user_id'];
+$userID = $_SESSION['user_id'];
 $initial = strtoupper(substr($_SESSION['name'], 0, 1));
  
 // Stats
@@ -11,8 +11,8 @@ $pending = 0;
 $inProgress = 0;
 $completed = 0;
  
-$statsStmt = $conn->prepare("SELECT status, COUNT(*) as count FROM reports WHERE user_id = ? GROUP BY status");
-$statsStmt->bind_param("i", $user_id);
+$statsStmt = $conn->prepare("SELECT status, COUNT(*) as count FROM report WHERE userID = ? GROUP BY status");
+$statsStmt->bind_param("s", $userID);
 $statsStmt->execute();
 $statsResult = $statsStmt->get_result();
  
@@ -24,15 +24,14 @@ while ($row = $statsResult->fetch_assoc()) {
 }
 $statsStmt->close();
  
-// Pagination setup
+// Pagination
 $perPage = 10;
 $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
 $offset = ($page - 1) * $perPage;
 $totalPages = max(1, ceil($totalReports / $perPage));
  
-// Reports for this page
-$reportsStmt = $conn->prepare("SELECT report_id, title, description, location, status, created_at FROM reports WHERE user_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?");
-$reportsStmt->bind_param("iii", $user_id, $perPage, $offset);
+$reportsStmt = $conn->prepare("SELECT reportID, title, description, location, status, DateReported FROM report WHERE userID = ? ORDER BY DateReported DESC LIMIT ? OFFSET ?");
+$reportsStmt->bind_param("sii", $userID, $perPage, $offset);
 $reportsStmt->execute();
 $reportsResult = $reportsStmt->get_result();
 ?>
@@ -86,8 +85,8 @@ $reportsResult = $reportsStmt->get_result();
         <div class="sidebar-spacer"></div>
  
         <a href="login.php" class="nav-item">
-    Logout
-</a>
+            Logout
+        </a>
  
     </aside>
  
@@ -194,12 +193,12 @@ $reportsResult = $reportsStmt->get_result();
                         </tr>
                     <?php else: ?>
                         <?php while ($report = $reportsResult->fetch_assoc()): ?>
-                            <tr onclick="window.location='trackstatus.php?id=<?php echo $report['report_id']; ?>'" style="cursor:pointer;">
-                                <td>#<?php echo str_pad($report['report_id'], 3, '0', STR_PAD_LEFT); ?></td>
+                            <tr onclick="window.location='trackstatus.php?id=<?php echo urlencode($report['reportID']); ?>'" style="cursor:pointer;">
+                                <td><?php echo htmlspecialchars($report['reportID']); ?></td>
                                 <td><?php echo htmlspecialchars($report['title']); ?></td>
                                 <td><?php echo htmlspecialchars($report['description']); ?></td>
                                 <td><?php echo htmlspecialchars($report['location']); ?></td>
-                                <td><?php echo date('d M Y', strtotime($report['created_at'])); ?></td>
+                                <td><?php echo date('d M Y', strtotime($report['DateReported'])); ?></td>
                                 <td>
                                     <?php
                                         $badgeClass = 'badge-pending';

@@ -1,5 +1,6 @@
 <?php
 require 'db_connect.php';
+require 'id_helper.php';
  
 $error = "";
 $success = "";
@@ -14,8 +15,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($password !== $confirmPassword) {
         $error = "Passwords do not match.";
     } else {
-        // Check if email already exists
-        $stmt = $conn->prepare("SELECT user_id FROM users WHERE email = ?");
+ 
+        // Figure out which table/column/prefix this role uses
+        switch ($role) {
+            case 'admin':
+                $table = 'admin';
+                $idCol = 'adminID';
+                $prefix = 'A';
+                break;
+            case 'maintenance':
+                $table = 'maintenance';
+                $idCol = 'staffID';
+                $prefix = 'S';
+                break;
+            default:
+                $table = 'user';
+                $idCol = 'userID';
+                $prefix = 'U';
+                $role = 'user';
+        }
+ 
+        // Check if email already exists in that table
+        $stmt = $conn->prepare("SELECT $idCol FROM $table WHERE email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -23,13 +44,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($result->num_rows > 0) {
             $error = "An account with this email already exists.";
         } else {
+            $newId = generateNextId($conn, $table, $idCol, $prefix);
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
  
-            $insert = $conn->prepare("INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)");
-            $insert->bind_param("ssss", $name, $email, $hashedPassword, $role);
+            $insert = $conn->prepare("INSERT INTO $table ($idCol, name, email, password) VALUES (?, ?, ?, ?)");
+            $insert->bind_param("ssss", $newId, $name, $email, $hashedPassword);
  
             if ($insert->execute()) {
-                $success = "Account created! You can now log in.";
+                $success = "Account created! Your ID is $newId. You can now log in.";
             } else {
                 $error = "Something went wrong. Please try again.";
             }
@@ -212,3 +234,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </body>
  
 </html>
+ 

@@ -2,7 +2,7 @@
 require 'auth_check.php';
 require 'db_connect.php';
  
-$user_id = $_SESSION['user_id'];
+$userID = $_SESSION['user_id'];
 $initial = strtoupper(substr($_SESSION['name'], 0, 1));
  
 // Stats
@@ -11,8 +11,8 @@ $pending = 0;
 $inProgress = 0;
 $completed = 0;
  
-$statsStmt = $conn->prepare("SELECT status, COUNT(*) as count FROM reports WHERE user_id = ? GROUP BY status");
-$statsStmt->bind_param("i", $user_id);
+$statsStmt = $conn->prepare("SELECT status, COUNT(*) as count FROM report WHERE userID = ? GROUP BY status");
+$statsStmt->bind_param("s", $userID);
 $statsStmt->execute();
 $statsResult = $statsStmt->get_result();
  
@@ -25,8 +25,8 @@ while ($row = $statsResult->fetch_assoc()) {
 $statsStmt->close();
  
 // Recent reports (latest 5)
-$reportsStmt = $conn->prepare("SELECT report_id, title, description, location, status, created_at FROM reports WHERE user_id = ? ORDER BY created_at DESC LIMIT 5");
-$reportsStmt->bind_param("i", $user_id);
+$reportsStmt = $conn->prepare("SELECT reportID, title, description, location, status, DateReported FROM report WHERE userID = ? ORDER BY DateReported DESC LIMIT 5");
+$reportsStmt->bind_param("s", $userID);
 $reportsStmt->execute();
 $reportsResult = $reportsStmt->get_result();
 ?>
@@ -80,8 +80,8 @@ $reportsResult = $reportsStmt->get_result();
         <div class="sidebar-spacer"></div>
  
         <a href="login.php" class="nav-item">
-    Logout
-</a>
+            Logout
+        </a>
  
     </aside>
  
@@ -194,11 +194,11 @@ $reportsResult = $reportsStmt->get_result();
                     <?php else: ?>
                         <?php while ($report = $reportsResult->fetch_assoc()): ?>
                             <tr>
-                                <td>#<?php echo str_pad($report['report_id'], 3, '0', STR_PAD_LEFT); ?></td>
+                                <td><?php echo htmlspecialchars($report['reportID']); ?></td>
                                 <td><?php echo htmlspecialchars($report['title']); ?></td>
                                 <td><?php echo htmlspecialchars($report['description']); ?></td>
                                 <td><?php echo htmlspecialchars($report['location']); ?></td>
-                                <td><?php echo date('d M Y', strtotime($report['created_at'])); ?></td>
+                                <td><?php echo date('d M Y', strtotime($report['DateReported'])); ?></td>
                                 <td>
                                     <?php
                                         $badgeClass = 'badge-pending';
