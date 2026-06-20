@@ -3,21 +3,25 @@ require 'auth_admin.php';
 require 'db_connect.php';
 
 $message = "";
+
+// Fetch actual mechanics/technicians out of the maintenance table to fill our select dropdown dynamically
+$tech_list = mysqli_query($conn, "SELECT name FROM maintenance ORDER BY name ASC");
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $report_id = mysqli_real_escape_string($conn, $_POST['report_id']);
     $technician = mysqli_real_escape_string($conn, $_POST['technician']);
     
-    // Update the technician name and push status into "In Progress"
-    $update_query = "UPDATE reports SET assigned_to='$technician', status='In Progress' WHERE id='$report_id'";
+    // Updates assigned worker name and sets status to 'In Progress' inside your report table
+    $update_query = "UPDATE report SET assigned_to='$technician', status='In Progress' WHERE reportID='$report_id'";
     
     if (mysqli_query($conn, $update_query)) {
         if (mysqli_affected_rows($conn) > 0) {
-            $message = "<p style='color: green; margin-bottom: 15px;'>Task successfully assigned! Report status is now 'In Progress'.</p>";
+            $message = "<p style='color: #2ab5b5; font-weight:600; margin-bottom: 15px;'>Task successfully assigned to $technician! Report status changed to 'In Progress'.</p>";
         } else {
-            $message = "<p style='color: red; margin-bottom: 15px;'>Report ID not found.</p>";
+            $message = "<p style='color: #e53e3e; font-weight:600; margin-bottom: 15px;'>Report ID #$report_id not found in records.</p>";
         }
     } else {
-        $message = "<p style='color: red; margin-bottom: 15px;'>Error updating record: " . mysqli_error($conn) . "</p>";
+        $message = "<p style='color: #e53e3e; font-weight:600; margin-bottom: 15px;'>Error executing query: " . mysqli_error($conn) . "</p>";
     }
 }
 
@@ -64,21 +68,27 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
 
         <form class="assign-form" action="assign-task.php" method="POST">
             <div class="form-group">
-                <label>Report ID (Numbers only, e.g., 1)</label>
-                <input type="text" name="report_id" placeholder="Enter Report ID" required>
+                <label>Report ID (Look up numbers in your reports log tab)</label>
+                <input type="number" name="report_id" placeholder="Enter Report ID (e.g. 1)" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
             </div>
 
-            <div class="form-group">
-                <label>Assign To</label>
-                <select name="technician" required>
+            <div class="form-group" style="margin-top: 15px;">
+                <label>Assign To Technician</label>
+                <select name="technician" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
                     <option value="">Select Technician</option>
-                    <option value="Ravi">Ravi</option>
-                    <option value="Raj">Raj</option>
-                    <option value="Priya">Priya</option>
+                    <?php if (mysqli_num_rows($tech_list) > 0): ?>
+                        <?php while($tech = mysqli_fetch_assoc($tech_list)): ?>
+                            <option value="<?php echo htmlspecialchars($tech['name']); ?>"><?php echo htmlspecialchars($tech['name']); ?></option>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <option value="Ravi">Ravi (Fallback)</option>
+                        <option value="Raj">Raj (Fallback)</option>
+                        <option value="Priya">Priya (Fallback)</option>
+                    <?php endif; ?>
                 </select>
             </div>
 
-            <button type="submit" class="submit-btn">Assign Task</button>
+            <button type="submit" class="submit-btn" style="margin-top: 20px;">Assign Task</button>
         </form>
     </section>
 </main>

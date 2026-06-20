@@ -2,7 +2,7 @@
 require 'auth_admin.php';
 require 'db_connect.php';
 
-$users_query = mysqli_query($conn, "SELECT id, name, email, role FROM users ORDER BY id ASC");
+$users_query = mysqli_query($conn, "SELECT userID, name, email FROM user ORDER BY userID ASC");
 $admin_name = $_SESSION['name'] ?? 'Admin';
 $avatar_letter = strtoupper(substr($admin_name, 0, 1));
 ?>
@@ -12,7 +12,7 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FixIt - User Management</title>
-    <link class="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -62,10 +62,10 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
             <tbody id="userTable">
                 <?php while($user = mysqli_fetch_assoc($users_query)): ?>
                 <tr>
-                    <td>U0<?php echo $user['id']; ?></td>
-                    <td><?php echo htmlspecialchars($user['name']); ?></td>
-                    <td><?php echo htmlspecialchars($user['email']); ?></td>
-                    <td><?php echo htmlspecialchars($user['role']); ?></td>
+                    <td>U0<?php echo $user['userID']; ?></td>
+                    <td><?php echo htmlspecialchars($user['name'] ?? ''); ?></td>
+                    <td><?php echo htmlspecialchars($user['email'] ?? ''); ?></td>
+                    <td>Student / Staff</td>
                     <td>
                         <span class="status-badge badge-completed">Active</span>
                     </td>
