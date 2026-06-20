@@ -51,7 +51,7 @@ $initial = strtoupper(substr($_SESSION['name'], 0, 1));
  
         <div class="sidebar-spacer"></div>
  
-        <a href="logout.php" class="nav-item">
+        <a href="login.php" class="nav-item">
     Logout
 </a>
  

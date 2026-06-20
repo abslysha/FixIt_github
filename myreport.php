@@ -85,7 +85,7 @@ $reportsResult = $reportsStmt->get_result();
  
         <div class="sidebar-spacer"></div>
  
-        <a href="logout.php" class="nav-item">
+        <a href="login.php" class="nav-item">
     Logout
 </a>
  
