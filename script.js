@@ -54,13 +54,13 @@ document.getElementById('registerForm').addEventListener('submit', function(even
 
     switch (selectedRole) {
         case 'user':
-            window.location.href = 'userdb.html'; 
+            window.location.href = 'userdb.php'; 
             break;
         case 'maintenance':
-            window.location.href = 'maintenancedashboard.html'; 
+            window.location.href = 'dashboardM.php'; 
             break;
         case 'admin':
-            window.location.href = 'dashboard.html'; 
+            window.location.href = 'dashboard.php'; 
             break;
         default:
             alert("An error occurred. Please try again.");
