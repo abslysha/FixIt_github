@@ -2,7 +2,7 @@
 require 'auth_admin.php';
 require 'db_connect.php';
 
-// Fetch stats counters
+// Fetch stats counters from the singular 'report' table
 $total_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM report");
 $total_reports = mysqli_fetch_assoc($total_query)['total'] ?? 0;
 
@@ -20,7 +20,7 @@ $pending_pct = $total_reports > 0 ? round(($pending_reports / $total_reports) * 
 $progress_pct = $total_reports > 0 ? round(($progress_reports / $total_reports) * 100) : 0;
 $completed_pct = $total_reports > 0 ? round(($completed_reports / $total_reports) * 100) : 0;
 
-// Fetch top 5 recent reports
+// Fetch top 5 recent reports sorted by your true primary column 'reportID'
 $recent_reports = mysqli_query($conn, "SELECT * FROM report ORDER BY reportID DESC LIMIT 5");
 
 // Extract dynamic avatar letter
@@ -130,20 +130,21 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
                 <tbody id="dashboardTable">
                     <?php while($row = mysqli_fetch_assoc($recent_reports)): ?>
                     <tr>
-                        <td>#<?php echo $row['id']; ?></td>
-                        <td><strong><?php echo htmlspecialchars($row['issue']); ?></strong></td>
-                        <td><?php echo htmlspecialchars($row['description']); ?></td>
-                        <td><?php echo htmlspecialchars($row['location']); ?></td>
+                        <td>#<?php echo $row['reportID']; ?></td>
+                        <td><strong><?php echo htmlspecialchars($row['issue'] ?? ''); ?></strong></td>
+                        <td><?php echo htmlspecialchars($row['description'] ?? ''); ?></td>
+                        <td><?php echo htmlspecialchars($row['location'] ?? ''); ?></td>
                         <td><?php echo htmlspecialchars($row['assigned_to'] ?? 'Unassigned'); ?></td>
-                        <td><?php echo date('Y-m-d', strtotime($row['created_at'])); ?></td>
+                        <td><?php echo isset($row['created_at']) ? date('Y-m-d', strtotime($row['created_at'])) : date('Y-m-d'); ?></td>
                         <td>
                             <?php 
+                            $status = $row['status'] ?? 'Pending';
                             $badge_class = 'badge-pending';
-                            if($row['status'] == 'In Progress') $badge_class = 'badge-inprogress';
-                            if($row['status'] == 'Completed') $badge_class = 'badge-completed';
+                            if($status == 'In Progress') $badge_class = 'badge-inprogress';
+                            if($status == 'Completed') $badge_class = 'badge-completed';
                             ?>
                             <span class="status-badge <?php echo $badge_class; ?>">
-                                <?php echo htmlspecialchars($row['status']); ?>
+                                <?php echo htmlspecialchars($status); ?>
                             </span>
                         </td>
                     </tr>
