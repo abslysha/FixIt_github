@@ -27,140 +27,190 @@ $recent_reports = mysqli_query($conn, "SELECT * FROM report ORDER BY reportID DE
 $admin_name = $_SESSION['name'] ?? 'Admin';
 $avatar_letter = strtoupper(substr($admin_name, 0, 1));
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FixIt - Admin Dashboard</title>
+    <title>FixIt - Report Data</title>
+
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
 
+    <!-- Sidebar -->
     <aside class="sidebar">
+
         <div class="sidebar-logo">
             <img src="FixIt_Logo.png" alt="FixIt Logo">
         </div>
+
         <button class="sidebar-menu-btn">
-            <span></span><span></span><span></span>
+            <span></span>
+            <span></span>
+            <span></span>
         </button>
+
         <nav>
-            <a href="dashboard.php" class="nav-item active">Dashboard</a>
-            <a href="report-data.php" class="nav-item">Report Data</a>
-            <a href="user-management.php" class="nav-item">User Management</a>
-            <a href="assign-task.php" class="nav-item">Assign Task</a>
+
+            <a href="dashboard.html" class="nav-item">
+                Dashboard
+            </a>
+
+            <a href="report-data.html" class="nav-item active">
+                Report Data
+            </a>
+
+            <a href="user-management.html" class="nav-item">
+                User Management
+            </a>
+
+            <a href="assign-task.html" class="nav-item">
+                Assign Task
+            </a>
+
         </nav>
+
         <div class="sidebar-spacer"></div>
-        <a href="login.php" class="nav-item">Logout</a>
+
+        <a href="login.html" class="nav-item">
+    Logout
+        </a>
+
     </aside>
 
+    <!-- Main Content -->
     <main class="main">
+
         <header class="topbar">
-            <h1 class="topbar-title"><em>ADMIN</em> DASHBOARD</h1>
+
+            <h1 class="topbar-title">
+                REPORT DATA
+            </h1>
+
             <div class="topbar-actions">
-                <button class="icon-btn">🔔<span class="notif-dot"></span></button>
-                <div class="avatar"><?php echo $avatar_letter; ?></div>
+
+                <button class="icon-btn">
+                    🔔
+                    <span class="notif-dot"></span>
+                </button>
+
+                <div class="avatar">
+                    M
+                </div>
+
             </div>
+
         </header>
 
-        <section class="stat-cards">
-            <div class="stat-card blue">
-                <div class="stat-info">
-                    <span class="stat-label">Total Reports</span>
-                    <span class="stat-value"><?php echo $total_reports; ?></span>
-                </div>
-            </div>
-            <div class="stat-card yellow">
-                <div class="stat-info">
-                    <span class="stat-label">Pending</span>
-                    <span class="stat-value"><?php echo $pending_reports; ?></span>
-                </div>
-            </div>
-            <div class="stat-card pink">
-                <div class="stat-info">
-                    <span class="stat-label">In Progress</span>
-                    <span class="stat-value"><?php echo $progress_reports; ?></span>
-                </div>
-            </div>
-            <div class="stat-card green">
-                <div class="stat-info">
-                    <span class="stat-label">Completed</span>
-                    <span class="stat-value"><?php echo $completed_reports; ?></span>
-                </div>
-            </div>
-        </section>
-
-        <section class="charts-row">
-            <div class="card">
-                <h3 class="card-title">Daily Reports Submitted (Last 30 Days)</h3>
-                <div class="chart-placeholder">Data updates dynamically</div>
-            </div>
-            <div class="card">
-                <h3 class="card-title">Report Status Overview</h3>
-                <div class="status-summary">
-                    <div class="legend-item"><span class="legend-dot yellow"></span>Pending (<?php echo $pending_pct; ?>%)</div>
-                    <div class="legend-item"><span class="legend-dot pink"></span>In Progress (<?php echo $progress_pct; ?>%)</div>
-                    <div class="legend-item"><span class="legend-dot green"></span>Completed (<?php echo $completed_pct; ?>%)</div>
-                </div>
-            </div>
-        </section>
-
         <section class="table-card">
+
             <div class="table-controls">
+
                 <div class="show-entries">
-                    Show <select><option>5</option></select> entries
+                    Show
+
+                    <select id="entries">
+                        <option>10</option>
+                        <option>25</option>
+                        <option>50</option>
+                    </select>
+
+                    entries
                 </div>
+
                 <div class="search-box">
-                    <input type="text" id="dashboardSearch" placeholder="Search...">
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Search report..."
+                    >
                 </div>
+
             </div>
+
             <table>
+
                 <thead>
                     <tr>
                         <th>reportID</th>
                         <th>Issue</th>
                         <th>Description</th>
                         <th>Location</th>
-                        <th>Assigned To</th>
                         <th>Date</th>
                         <th>Status</th>
                     </tr>
                 </thead>
-                <tbody id="dashboardTable">
-                    <?php while($row = mysqli_fetch_assoc($recent_reports)): ?>
-                    <tr>
-                        <td>#<?php echo $row['reportID']; ?></td>
-                        <td><strong><?php echo htmlspecialchars($row['issue'] ?? ''); ?></strong></td>
-                        <td><?php echo htmlspecialchars($row['description'] ?? ''); ?></td>
-                        <td><?php echo htmlspecialchars($row['location'] ?? ''); ?></td>
-                        <td><?php echo htmlspecialchars($row['assigned_to'] ?? 'Unassigned'); ?></td>
-                        <td><?php echo isset($row['created_at']) ? date('Y-m-d', strtotime($row['created_at'])) : date('Y-m-d'); ?></td>
-                        <td>
-                            <?php 
-                            $status = $row['status'] ?? 'Pending';
-                            $badge_class = 'badge-pending';
-                            if($status == 'In Progress') $badge_class = 'badge-inprogress';
-                            if($status == 'Completed') $badge_class = 'badge-completed';
-                            ?>
-                            <span class="status-badge <?php echo $badge_class; ?>">
-                                <?php echo htmlspecialchars($status); ?>
-                            </span>
-                        </td>
-                    </tr>
-                    <?php endwhile; ?>
+
+                <tbody id="reportTable">
+
                 </tbody>
+
             </table>
+
+            <div class="table-footer">
+
+                <span>
+                    Showing 1 to 10 of 430 entries
+                </span>
+
+                <div class="pagination">
+
+                    <button class="page-btn">
+                        Previous
+                    </button>
+
+                    <button class="page-btn active">
+                        1
+                    </button>
+
+                    <button class="page-btn">
+                        2
+                    </button>
+
+                    <button class="page-btn">
+                        3
+                    </button>
+
+                    <button class="page-btn">
+                        Next
+                    </button>
+
+                </div>
+
+            </div>
+
         </section>
+
     </main>
 
     <script>
-        document.getElementById("dashboardSearch").addEventListener("keyup", function () {
-            let filter = this.value.toLowerCase();
-            document.querySelectorAll("#dashboardTable tr").forEach(row => {
-                row.style.display = row.innerText.toLowerCase().includes(filter) ? "" : "none";
+        const searchInput =
+            document.getElementById("searchInput");
+
+        searchInput.addEventListener("keyup", function () {
+
+            let filter =
+                searchInput.value.toLowerCase();
+
+            let rows =
+                document.querySelectorAll("#reportTable tr");
+
+            rows.forEach(row => {
+
+                row.style.display =
+                    row.innerText.toLowerCase()
+                    .includes(filter)
+                    ? ""
+                    : "none";
+
             });
+
         });
     </script>
+
 </body>
 </html>
