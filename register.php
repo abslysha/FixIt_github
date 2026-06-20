@@ -1,18 +1,173 @@
 <?php
-include 'database.php';
+include 'database.php'; // ensure $conn is a valid PDO connection
 
-if (isset($_POST['name'], $_POST['email'], $_POST['password'])) {
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    if (isset($_POST['name'], $_POST['email'], $_POST['password'])) {
+        $name = trim($_POST['name']);
+        $email = trim($_POST['email']);
+        $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-    // Match table name and column names exactly
-    $stmt = $conn->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
-    $stmt->execute([$name, $email, $password]);
+        try {
+            $stmt = $conn->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
+            $stmt->execute([$name, $email, $password]);
 
-    header("Location: login.html");
-    exit();
-} else {
-    echo "Form data missing.";
+            header("Location: login.php"); // redirect to login page
+            exit();
+        } catch (PDOException $e) {
+            echo "Database error: " . $e->getMessage();
+        }
+    } else {
+        echo "Form data missing.";
+    }
 }
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FixIt Register</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="loginstyle.css">
+</head>
+
+<body>
+
+    <div class="browser">
+
+        <!-- LEFT PANEL -->
+
+        <div class="left-panel">
+
+            <div class="branding">
+
+                <img src="FixIt_Logo.png"
+                     alt="FixIt Logo"
+                     class="logo">
+
+                <div class="logo-text">
+
+                    <h3>FixIt</h3>
+
+                    <p>
+                        FACULTY DAMAGE<br>
+                        REPORTING SYSTEM
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="tagline">
+
+                Report and track<br>
+                damage issues easily<br>
+                at your faculty
+
+            </div>
+
+        
+            <!-- Worker Illustration -->
+
+            <img src="worker.png"
+                 alt="Worker"
+                 class="worker">
+
+        </div>
+
+        <!-- RIGHT PANEL -->
+
+      <div class="right-panel">
+
+    <h1>Create Account</h1>
+
+    <form>
+
+        <label>Email</label>
+
+        <input
+            type="email"
+            placeholder="Enter your email">
+
+        <label>Register as</label>
+
+        <select id="roleDropdown" required>
+        <option value="" disabled selected>Select Role</option>
+        <option value="user">User</option>
+        <option value="maintenance">Maintenance</option>
+        <option value="admin">Administrator</option>
+    </select>
+
+        <label>Password</label>
+
+        <div class="password-wrapper">
+
+            <input
+                type="password"
+                id="password"
+                placeholder="Enter your password">
+
+            <span class="eye"
+                onclick="togglePassword()">
+                👁
+            </span>
+
+        </div>
+
+        <label>Confirm Password</label>
+
+        <div class="password-wrapper">
+
+            <input
+                type="password"
+                id="confirmPassword"
+                placeholder="Confirm your password">
+
+            <span class="eye"
+                onclick="toggleConfirmPassword()">
+                👁
+            </span>
+
+        </div>
+
+        <div class="remember-container">
+
+            <input type="checkbox">
+
+            <span>Remember Me</span>
+
+        </div>
+
+        <button
+            type="submit"
+            class="register-btn">
+
+            Register
+
+        </button>
+
+        <div class="login-link">
+
+            Already have an account?
+
+            <a href="login.html">
+                Login
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+           
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
