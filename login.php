@@ -142,6 +142,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             <button class="login-btn">
 
+
                 Login
 
             </button>
@@ -150,7 +151,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 Not registered yet?
 
-                <a href="register.html">
+                <a href="register.php">
                     Sign Up
                 </a>
 
