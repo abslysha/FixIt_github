@@ -56,19 +56,19 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
 
         <nav>
 
-            <a href="dashboard.html" class="nav-item">
+            <a href="dashboard.php" class="nav-item">
                 Dashboard
             </a>
 
-            <a href="report-data.html" class="nav-item active">
+            <a href="report-data.php" class="nav-item active">
                 Report Data
             </a>
 
-            <a href="user-management.html" class="nav-item">
+            <a href="user-management.php" class="nav-item">
                 User Management
             </a>
 
-            <a href="assign-task.html" class="nav-item">
+            <a href="assign-task.php" class="nav-item">
                 Assign Task
             </a>
 
@@ -76,7 +76,7 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
 
         <div class="sidebar-spacer"></div>
 
-        <a href="login.html" class="nav-item">
+        <a href="login.php" class="nav-item">
     Logout
         </a>
 
