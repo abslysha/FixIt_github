@@ -3,16 +3,16 @@ require 'auth_admin.php';
 require 'db_connect.php';
 
 // Fetch stats counters
-$total_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM reports");
+$total_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM report");
 $total_reports = mysqli_fetch_assoc($total_query)['total'] ?? 0;
 
-$pending_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM reports WHERE status='Pending'");
+$pending_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM report WHERE status='Pending'");
 $pending_reports = mysqli_fetch_assoc($pending_query)['total'] ?? 0;
 
-$progress_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM reports WHERE status='In Progress'");
+$progress_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM report WHERE status='In Progress'");
 $progress_reports = mysqli_fetch_assoc($progress_query)['total'] ?? 0;
 
-$completed_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM reports WHERE status='Completed'");
+$completed_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM report WHERE status='Completed'");
 $completed_reports = mysqli_fetch_assoc($completed_query)['total'] ?? 0;
 
 // Calculate percentages safely to avoid division by zero
@@ -21,7 +21,7 @@ $progress_pct = $total_reports > 0 ? round(($progress_reports / $total_reports) 
 $completed_pct = $total_reports > 0 ? round(($completed_reports / $total_reports) * 100) : 0;
 
 // Fetch top 5 recent reports
-$recent_reports = mysqli_query($conn, "SELECT * FROM reports ORDER BY id DESC LIMIT 5");
+$recent_reports = mysqli_query($conn, "SELECT * FROM report ORDER BY reportID DESC LIMIT 5");
 
 // Extract dynamic avatar letter
 $admin_name = $_SESSION['name'] ?? 'Admin';
