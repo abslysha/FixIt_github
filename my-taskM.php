@@ -42,6 +42,22 @@ $avatar_letter = strtoupper(substr($tech_name, 0, 1));
             border: 1px solid #ccc;
             cursor: pointer;
         }
+        .task-thumb {
+            width: 48px;
+            height: 48px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid #e0e4ed;
+            cursor: pointer;
+        }
+        .task-file-link {
+            font-size: 0.85rem;
+            color: #1e6fb5;
+        }
+        .no-attachment {
+            color: #7a869a;
+            font-size: 0.8rem;
+        }
     </style>
 </head>
 <body>
@@ -89,6 +105,7 @@ $avatar_letter = strtoupper(substr($tech_name, 0, 1));
                         <th>Report ID</th>
                         <th>Location</th>
                         <th>Issue</th>
+                        <th>Photo</th>
                         <th>Status</th>
                         <th>Date Reported</th>
                         <th>Update Status</th>
@@ -98,12 +115,27 @@ $avatar_letter = strtoupper(substr($tech_name, 0, 1));
                     <?php if($total_count > 0): ?>
                         <?php while($row = mysqli_fetch_assoc($tasks_query)): 
                             $current_status = $row['status'] ?? 'Pending';
+                            $attachment = $row['attachment'] ?? null;
+                            $ext = $attachment ? strtolower(pathinfo($attachment, PATHINFO_EXTENSION)) : '';
                         ?>
                         <tr>
                             <td><input type="checkbox" class="row-checkbox"></td>
                             <td>#<?php echo $row['reportID']; ?></td>
                             <td><?php echo htmlspecialchars($row['location'] ?? ''); ?></td>
                             <td><strong><?php echo htmlspecialchars($row['title'] ?? 'No Title'); ?></strong></td>
+                            <td>
+                                <?php if ($attachment && file_exists($attachment)): ?>
+                                    <?php if (in_array($ext, ['png', 'jpg', 'jpeg'])): ?>
+                                        <a href="<?php echo htmlspecialchars($attachment); ?>" target="_blank">
+                                            <img src="<?php echo htmlspecialchars($attachment); ?>" class="task-thumb" alt="Report photo">
+                                        </a>
+                                    <?php else: ?>
+                                        <a href="<?php echo htmlspecialchars($attachment); ?>" target="_blank" class="task-file-link">📄 View file</a>
+                                    <?php endif; ?>
+                                <?php else: ?>
+                                    <span class="no-attachment">No photo</span>
+                                <?php endif; ?>
+                            </td>
                             <td>
                                 <?php 
                                 $badge_class = 'badge-pending';
@@ -130,7 +162,7 @@ $avatar_letter = strtoupper(substr($tech_name, 0, 1));
                         <?php endwhile; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="7" style="text-align:center;color:#7a869a;padding:2rem;">No records found</td>
+                            <td colspan="8" style="text-align:center;color:#7a869a;padding:2rem;">No records found</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
