@@ -7,6 +7,9 @@ $message = "";
 // Fetch staffID + name so we can save the correct ID, not just the name
 $tech_list = mysqli_query($conn, "SELECT staffID, name FROM maintenance ORDER BY name ASC");
 
+// Fetch only Pending reports for the dropdown
+$pending_reports = mysqli_query($conn, "SELECT reportID, title, location FROM report WHERE status='Pending' ORDER BY reportID ASC");
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $report_id = mysqli_real_escape_string($conn, $_POST['report_id']);
     $technician = mysqli_real_escape_string($conn, $_POST['technician']); // this is now staffID
@@ -23,6 +26,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         $message = "<p style='color: #e53e3e; font-weight:600; margin-bottom: 15px;'>Error executing query: " . mysqli_error($conn) . "</p>";
     }
+
+    // Re-fetch pending reports after update so the dropdown refreshes (the assigned one disappears)
+    $pending_reports = mysqli_query($conn, "SELECT reportID, title, location FROM report WHERE status='Pending' ORDER BY reportID ASC");
 }
 
 $admin_name = $_SESSION['name'] ?? 'Admin';
@@ -49,7 +55,7 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
         <a href="assign-task.php" class="nav-item active">Assign Task</a>
     </nav>
     <div class="sidebar-spacer"></div>
-   <a href="logout.php" class="nav-item">Logout</a>
+    <a href="logout.php" class="nav-item">Logout</a>
 </aside>
 
 <main class="main">
@@ -68,8 +74,19 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
 
         <form class="assign-form" action="assign-task.php" method="POST">
             <div class="form-group">
-                <label>Report ID (Look up numbers in your reports log tab)</label>
-                <input type="text" name="report_id" placeholder="Enter Report ID (e.g. 1)" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                <label>Report ID</label>
+                <select name="report_id" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    <option value="">Select Report</option>
+                    <?php if (mysqli_num_rows($pending_reports) > 0): ?>
+                        <?php while($report = mysqli_fetch_assoc($pending_reports)): ?>
+                            <option value="<?php echo htmlspecialchars($report['reportID']); ?>">
+                                #<?php echo htmlspecialchars($report['reportID']); ?> - <?php echo htmlspecialchars($report['title']); ?> (<?php echo htmlspecialchars($report['location']); ?>)
+                            </option>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <option value="">No pending reports found</option>
+                    <?php endif; ?>
+                </select>
             </div>
 
             <div class="form-group" style="margin-top: 15px;">
