@@ -58,6 +58,42 @@ $avatar_letter = strtoupper(substr($tech_name, 0, 1));
             color: #7a869a;
             font-size: 0.8rem;
         }
+
+        /* ===== Image Popup Modal ===== */
+        .photo-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .photo-modal-overlay.active {
+            display: flex;
+        }
+        .photo-modal-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+        }
+        .photo-modal-content img {
+            max-width: 90vw;
+            max-height: 90vh;
+            border-radius: 8px;
+            display: block;
+        }
+        .photo-modal-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+        }
     </style>
 </head>
 <body>
@@ -126,9 +162,7 @@ $avatar_letter = strtoupper(substr($tech_name, 0, 1));
                             <td>
                                 <?php if ($attachment && file_exists($attachment)): ?>
                                     <?php if (in_array($ext, ['png', 'jpg', 'jpeg'])): ?>
-                                        <a href="<?php echo htmlspecialchars($attachment); ?>" target="_blank">
-                                            <img src="<?php echo htmlspecialchars($attachment); ?>" class="task-thumb" alt="Report photo">
-                                        </a>
+                                        <img src="<?php echo htmlspecialchars($attachment); ?>" class="task-thumb" alt="Report photo" onclick="openPhotoModal('<?php echo htmlspecialchars($attachment); ?>')">
                                     <?php else: ?>
                                         <a href="<?php echo htmlspecialchars($attachment); ?>" target="_blank" class="task-file-link">📄 View file</a>
                                     <?php endif; ?>
@@ -174,6 +208,14 @@ $avatar_letter = strtoupper(substr($tech_name, 0, 1));
         </div>
     </main>
 
+    <!-- Photo Popup Modal -->
+    <div class="photo-modal-overlay" id="photoModalOverlay" onclick="closePhotoModal(event)">
+        <div class="photo-modal-content">
+            <span class="photo-modal-close" onclick="closePhotoModal(event)">&times;</span>
+            <img id="photoModalImg" src="" alt="Report photo full size">
+        </div>
+    </div>
+
     <script>
         document.getElementById("taskSearch").addEventListener("keyup", function () {
             let filter = this.value.toLowerCase();
@@ -187,6 +229,19 @@ $avatar_letter = strtoupper(substr($tech_name, 0, 1));
         document.getElementById("selectAll").addEventListener("change", function() {
             document.querySelectorAll(".row-checkbox").forEach(cb => cb.checked = this.checked);
         });
+
+        function openPhotoModal(src) {
+            document.getElementById("photoModalImg").src = src;
+            document.getElementById("photoModalOverlay").classList.add("active");
+        }
+
+        function closePhotoModal(event) {
+            // Only close if clicking the overlay or the X, not the image itself
+            if (event.target.id === "photoModalOverlay" || event.target.classList.contains("photo-modal-close")) {
+                document.getElementById("photoModalOverlay").classList.remove("active");
+                document.getElementById("photoModalImg").src = "";
+            }
+        }
     </script>
 </body>
 </html>
