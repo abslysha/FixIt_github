@@ -142,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <div class="register">
                 Not registered yet?
-                <a href="register.html">Sign Up</a>
+                <a href="register.php">Sign Up</a>
             </div>
         </div>
 
