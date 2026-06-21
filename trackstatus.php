@@ -83,7 +83,7 @@ $statsStmt->close();
  
         <div class="sidebar-spacer"></div>
  
-        <a href="login.php" class="nav-item">
+        <a href="logout.php" class="nav-item">
             Logout
         </a>
  
@@ -177,27 +177,28 @@ $statsStmt->close();
                     </span>
  
                 </div>
- 
-                <br>
- 
-                <h2>Location : </h2>
-                <span class="status-badge progress">
-                        <?php echo htmlspecialchars($report['location']); ?>
-                    </span>
- 
-                <h2>Issue : </h2>
-                <span class="status-badge progress">
-                        <?php echo htmlspecialchars($report['title']); ?>
-                    </span>
- 
-                <h2>Description : </h2>
-                <span class="status-badge progress">
-                        <?php echo htmlspecialchars($report['description']); ?>
-                    </span>
- 
-                <br>
+
+                <div class="report-detail-grid">
+
+                    <div class="detail-item">
+                        <span class="detail-label">Location</span>
+                        <span class="detail-value"><?php echo htmlspecialchars($report['location']); ?></span>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Issue</span>
+                        <span class="detail-value"><?php echo htmlspecialchars($report['title']); ?></span>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Description</span>
+                        <span class="detail-value"><?php echo htmlspecialchars($report['description']); ?></span>
+                    </div>
+
+                </div>
  
                 <?php if ($report['attachment'] && file_exists($report['attachment'])): ?>
+                    <div class="track-photo-section">
                     <h3>Uploaded Photo</h3>
                     <?php
                         $ext = strtolower(pathinfo($report['attachment'], PATHINFO_EXTENSION));
@@ -209,6 +210,7 @@ $statsStmt->close();
                     <?php else: ?>
                         <p><a href="<?php echo htmlspecialchars($report['attachment']); ?>" target="_blank">📄 View attached file</a></p>
                     <?php endif; ?>
+                    </div>
                 <?php endif; ?>
  
             <?php endif; ?>
