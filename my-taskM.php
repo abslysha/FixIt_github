@@ -52,11 +52,9 @@ $avatar_letter = strtoupper(substr($tech_name, 0, 1));
         </div>
         <nav>
             <a href="dashboardM.php" class="nav-item">
-                <i class="ti ti-layout-dashboard" style="font-size:20px;display:block;margin-bottom:4px;"></i>
                 Dashboard
             </a>
             <a href="my-taskM.php" class="nav-item active">
-                <i class="ti ti-clipboard-list" style="font-size:20px;display:block;margin-bottom:4px;"></i>
                 My Task
             </a>
         </nav>
@@ -105,7 +103,7 @@ $avatar_letter = strtoupper(substr($tech_name, 0, 1));
                             <td><input type="checkbox" class="row-checkbox"></td>
                             <td>#<?php echo $row['reportID']; ?></td>
                             <td><?php echo htmlspecialchars($row['location'] ?? ''); ?></td>
-                            <td><strong><?php echo htmlspecialchars($row['issue'] ?? 'No Issue Spec'); ?></strong></td>
+                            <td><strong><?php echo htmlspecialchars($row['title'] ?? 'No Title'); ?></strong></td>
                             <td>
                                 <?php 
                                 $badge_class = 'badge-pending';

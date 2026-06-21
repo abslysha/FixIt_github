@@ -47,11 +47,9 @@ $avatar_letter = strtoupper(substr($tech_name, 0, 1));
         </div>
         <nav>
             <a href="dashboardM.php" class="nav-item active">
-                <i class="ti ti-layout-dashboard" style="font-size:20px;display:block;margin-bottom:4px;"></i>
                 Dashboard
             </a>
             <a href="my-taskM.php" class="nav-item">
-                <i class="ti ti-clipboard-list" style="font-size:20px;display:block;margin-bottom:4px;"></i>
                 My Task
             </a>
         </nav>
