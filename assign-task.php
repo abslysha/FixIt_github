@@ -4,19 +4,19 @@ require 'db_connect.php';
 
 $message = "";
 
-// Fetch actual mechanics/technicians out of the maintenance table to fill our select dropdown dynamically
-$tech_list = mysqli_query($conn, "SELECT name FROM maintenance ORDER BY name ASC");
+// Fetch staffID + name so we can save the correct ID, not just the name
+$tech_list = mysqli_query($conn, "SELECT staffID, name FROM maintenance ORDER BY name ASC");
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $report_id = mysqli_real_escape_string($conn, $_POST['report_id']);
-    $technician = mysqli_real_escape_string($conn, $_POST['technician']);
-    
-    // Updates assigned worker name and sets status to 'In Progress' inside your report table
-    $update_query = "UPDATE report SET assigned_to='$technician', status='In Progress' WHERE reportID='$report_id'";
-    
+    $technician = mysqli_real_escape_string($conn, $_POST['technician']); // this is now staffID
+
+    // Updates assigned staffID and sets status to 'In Progress' inside your report table
+    $update_query = "UPDATE report SET staffID='$technician', status='In Progress' WHERE reportID='$report_id'";
+
     if (mysqli_query($conn, $update_query)) {
         if (mysqli_affected_rows($conn) > 0) {
-            $message = "<p style='color: #2ab5b5; font-weight:600; margin-bottom: 15px;'>Task successfully assigned to $technician! Report status changed to 'In Progress'.</p>";
+            $message = "<p style='color: #2ab5b5; font-weight:600; margin-bottom: 15px;'>Task successfully assigned! Report status changed to 'In Progress'.</p>";
         } else {
             $message = "<p style='color: #e53e3e; font-weight:600; margin-bottom: 15px;'>Report ID #$report_id not found in records.</p>";
         }
@@ -63,7 +63,7 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
 
     <section class="table-card">
         <h3 style="margin-bottom:20px;">Assign Maintenance Task</h3>
-        
+
         <?php echo $message; ?>
 
         <form class="assign-form" action="assign-task.php" method="POST">
@@ -78,12 +78,10 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
                     <option value="">Select Technician</option>
                     <?php if (mysqli_num_rows($tech_list) > 0): ?>
                         <?php while($tech = mysqli_fetch_assoc($tech_list)): ?>
-                            <option value="<?php echo htmlspecialchars($tech['name']); ?>"><?php echo htmlspecialchars($tech['name']); ?></option>
+                            <option value="<?php echo htmlspecialchars($tech['staffID']); ?>"><?php echo htmlspecialchars($tech['name']); ?></option>
                         <?php endwhile; ?>
                     <?php else: ?>
-                        <option value="Ravi">Ravi (Fallback)</option>
-                        <option value="Raj">Raj (Fallback)</option>
-                        <option value="Priya">Priya (Fallback)</option>
+                        <option value="">No technicians found</option>
                     <?php endif; ?>
                 </select>
             </div>
