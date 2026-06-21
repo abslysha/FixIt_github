@@ -65,66 +65,133 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FixIt - Login</title>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background-color: #f4f6f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .login-card {
-            background: #fff;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 400px;
-        }
-        h2 { margin-top: 0; color: #333; text-align: center; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 5px; color: #666; font-weight: 500; }
-        input[type="email"], input[type="password"] {
-            width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;
-        }
-        .btn {
-            width: 100%; padding: 12px; background: #007bff; border: none; color: white; 
-            font-weight: 600; border-radius: 4px; cursor: pointer; font-size: 1rem;
-        }
-        .btn:hover { background: #0056b3; }
-        .error-msg { color: #dc3545; font-weight: 600; text-align: center; margin-bottom: 15px; }
-    </style>
+    <title>FixIt Login</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="loginstyle.css">
 </head>
+
 <body>
 
-<div class="login-card">
-    <h2>Login to FixIt</h2>
-    
-    <?php if(!empty($error)): ?>
-        <div class="error-msg"><?php echo $error; ?></div>
-    <?php endif; ?>
+    <div class="browser">
 
-    <form action="login.php" method="POST">
-        <div class="form-group">
-            <label>Email Address</label>
-            <input type="email" name="email" required placeholder="Enter your email">
+        <!-- LEFT PANEL -->
+
+        <div class="left-panel">
+
+            <div class="branding">
+
+                <img src="FixIt_Logo.png"
+                     alt="FixIt Logo"
+                     class="logo">
+
+                <div class="logo-text">
+
+                    <h3>FixIt</h3>
+
+                    <p>
+                        FACULTY DAMAGE<br>
+                        REPORTING SYSTEM
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="tagline">
+
+                Report and track<br>
+                damage issues easily<br>
+                at your faculty
+
+            </div>
+
+        
+            <!-- Worker Illustration -->
+
+            <img src="worker.png"
+                 alt="Worker"
+                 class="worker">
+
         </div>
-        <div class="form-group">
+
+        <!-- RIGHT PANEL -->
+
+        <div class="right-panel">
+
+            <h1>Welcome Back!</h1>
+
+            <p class="subtitle">
+                Please login to continue
+            </p>
+
+            <label>Email</label>
+
+            <input type="email"
+                   placeholder="Enter your email">
+
             <label>Password</label>
-            <input type="password" name="password" required placeholder="Enter your password">
+
+            <div class="password-wrapper">
+
+                <input type="password"
+                       id="password"
+                       placeholder="Enter your password">
+
+                <span class="eye"
+                      onclick="togglePassword()">
+                    👁
+                </span>
+
+            </div>
+
+            <div class="options">
+
+                <label class="remember">
+
+                    <input type="checkbox">
+
+                    Remember Me
+
+                </label>
+
+                <a href="#">
+                    Forgot Password?
+                </a>
+
+            </div>
+
+            <button class="login-btn">
+
+                Login
+
+            </button>
+
+            <div class="register">
+
+                Not registered yet?
+
+                <a href="register.html">
+                    Sign Up
+                </a>
+
+            </div>
+
         </div>
-        <button type="submit" class="btn">Log In</button>
-    </form>
-</div>
+
+    </div>
+
+    <script src="script.js"></script>
 
 </body>
+
 </html>
