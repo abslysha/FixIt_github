@@ -47,5 +47,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $stmt->close();
     exit();
+
 } else {
     header("Location: reportdamage.php");
+    exit();
+}
+?>
