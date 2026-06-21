@@ -1,0 +1,169 @@
+<?php
+require 'auth_maintenance.php';
+require 'db_connect.php';
+
+$tech_name = $_SESSION['name'] ?? '';
+$message = "";
+
+// Handle status updates requested by the technician
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_task_status'])) {
+    $report_id = mysqli_real_escape_string($conn, $_POST['report_id']);
+    $new_status = mysqli_real_escape_string($conn, $_POST['status_value']);
+    
+    $update_sql = "UPDATE report SET status='$new_status' WHERE reportID='$report_id' AND assigned_to='$tech_name'";
+    if (mysqli_query($conn, $update_sql)) {
+        $message = "<p style='color: #2ab5b5; font-weight:600; margin: 15px 0;'>Task #$report_id successfully updated to '$new_status'!</p>";
+    }
+}
+
+// Fetch all tasks for this technician
+$tasks_query = mysqli_query($conn, "SELECT * FROM report WHERE assigned_to = '$tech_name' ORDER BY reportID DESC");
+$total_count = mysqli_num_rows($tasks_query);
+
+$avatar_letter = strtoupper(substr($tech_name, 0, 1));
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FixIt - My Task</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="maintanance.css">
+    <style>
+        .inline-select {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <img src="FixIt_Logo.png" alt="FixIt Logo" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=\'color:white;font-weight:700;font-size:18px;\'>Fi</span>'">
+        </div>
+        <nav>
+            <a href="dashboardM.php" class="nav-item">
+                <i class="ti ti-layout-dashboard" style="font-size:20px;display:block;margin-bottom:4px;"></i>
+                Dashboard
+            </a>
+            <a href="my-taskM.php" class="nav-item active">
+                <i class="ti ti-checklist" style="font-size:20px;display:block;margin-bottom:4px;"></i>
+                My Task
+            </a>
+        </nav>
+        <div class="sidebar-spacer"></div>
+        <a href="login.php" class="nav-item">
+            <i class="ti ti-logout" style="font-size:20px;display:block;margin-bottom:4px;"></i>
+            Logout
+        </a>
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <h1 class="topbar-title">MY ASSIGNED TASKS</h1>
+            <div class="topbar-actions">
+                <button class="icon-btn"><i class="ti ti-bell"></i></button>
+                <div class="avatar"><?php echo $avatar_letter; ?></div>
+            </div>
+        </header>
+
+        <div class="table-card" style="margin-top:20px;">
+            <?php echo $message; ?>
+            
+            <div class="table-controls">
+                <div class="show-entries">
+                    Show <select id="entriesSelect"><option value="<?php echo $total_count; ?>">All (<?php echo $total_count; ?>)</option></select> entries
+                </div>
+                <div class="search-box">
+                    <input type="text" id="taskSearch" placeholder="Search task...">
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 40px;"><input type="checkbox" id="selectAll"></th>
+                        <th>reportID</th>
+                        <th>Issue</th>
+                        <th>Description</th>
+                        <th>Location</th>
+                        <th>Date</th>
+                        <th>Status Badge</th>
+                        <th>Update Status</th>
+                    </tr>
+                </thead>
+                <tbody id="taskTableBody">
+                    <?php if($total_count > 0): ?>
+                        <?php while($row = mysqli_fetch_assoc($tasks_query)): 
+                            $current_status = $row['status'] ?? 'Pending';
+                        ?>
+                        <tr>
+                            <td><input type="checkbox" class="row-checkbox"></td>
+                            <td>#<?php echo $row['reportID']; ?></td>
+                            <td><strong><?php echo htmlspecialchars($row['issue'] ?? ''); ?></strong></td>
+                            <td><?php echo htmlspecialchars($row['description'] ?? ''); ?></td>
+                            <td><?php echo htmlspecialchars($row['location'] ?? ''); ?></td>
+                            <td><?php echo isset($row['created_at']) ? date('Y-m-d', strtotime($row['created_at'])) : date('Y-m-d'); ?></td>
+                            <td>
+                                <?php 
+                                $badge_class = 'badge-pending';
+                                if($current_status == 'In Progress') $badge_class = 'badge-inprogress';
+                                if($current_status == 'Completed') $badge_class = 'badge-completed';
+                                ?>
+                                <span class="status-badge <?php echo $badge_class; ?>">
+                                    <?php echo htmlspecialchars($current_status); ?>
+                                </span>
+                            </td>
+                            <td>
+                                <form action="my-taskM.php" method="POST" style="margin:0;">
+                                    <input type="hidden" name="update_task_status" value="1">
+                                    <input type="hidden" name="report_id" value="<?php echo $row['reportID']; ?>">
+                                    <select name="status_value" class="inline-select" onchange="this.form.submit()">
+                                        <option value="Pending" <?php if($current_status == 'Pending') echo 'selected'; ?>>Pending</option>
+                                        <option value="In Progress" <?php if($current_status == 'In Progress') echo 'selected'; ?>>In Progress</option>
+                                        <option value="Completed" <?php if($current_status == 'Completed') echo 'selected'; ?>>Completed</option>
+                                    </select>
+                                </form>
+                            </td>
+                        </tr>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="8" style="text-align:center;color:#7a869a;padding:2rem;">No assigned tasks found.</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+
+            <div class="table-footer">
+                <span id="entryInfo">Showing 1 to <?php echo $total_count; ?> of <?php echo $total_count; ?> entries</span>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.getElementById("taskSearch").addEventListener("keyup", function () {
+            let filter = this.value.toLowerCase();
+            document.querySelectorAll("#taskTableBody tr").forEach(row => {
+                if(row.cells.length > 1) {
+                    row.style.display = row.innerText.toLowerCase().includes(filter) ? "" : "none";
+                }
+            });
+        });
+
+        // Simple global select all toggler structure 
+        document.getElementById("selectAll").addEventListener("change", function() {
+            let checkboxes = document.querySelectorAll(".row-checkbox");
+            checkboxes.forEach(cb => cb.checked = this.checked);
+        });
+    </script>
+</body>
+</html>

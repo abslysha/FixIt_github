@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($foundRole === 'admin') {
             header("Location: dashboard.php");
         } elseif ($foundRole === 'maintenance') {
-            header("Location: maintenance-dashboard.php");
+            header("Location: dashboardM.php"); // 👈 Updated to redirect to your new maintenance panel filename
         } else {
             header("Location: userdb.php");
         }
@@ -71,8 +71,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
  
     <div class="browser">
- 
-        <!-- LEFT PANEL -->
  
         <div class="left-panel">
  
@@ -104,15 +102,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
  
  
-            <!-- Worker Illustration -->
- 
             <img src="worker.png"
                  alt="Worker"
                  class="worker">
  
         </div>
- 
-        <!-- RIGHT PANEL -->
  
         <div class="right-panel">
  
