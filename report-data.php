@@ -77,7 +77,7 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
                         <?php while($row = mysqli_fetch_assoc($all_reports)): ?>
                         <tr>
                             <td>#<?php echo $row['reportID']; ?></td>
-                            <td><strong><?php echo htmlspecialchars($row['issue'] ?? ''); ?></strong></td>
+                            <td><strong><?php echo htmlspecialchars($row['title'] ?? ''); ?></strong></td>
                             <td><?php echo htmlspecialchars($row['description'] ?? ''); ?></td>
                             <td><?php echo htmlspecialchars($row['location'] ?? ''); ?></td>
                             <td><?php echo isset($row['created_at']) ? date('Y-m-d', strtotime($row['created_at'])) : date('Y-m-d'); ?></td>
