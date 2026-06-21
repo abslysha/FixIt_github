@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 // Check if user is logged in AND has the admin role matching login.php
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+if (!isset($_SESSION['userID']) || $_SESSION['role'] !== 'admin') {
     header("Location: login.php");
     exit();
 }

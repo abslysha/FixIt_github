@@ -8,7 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = trim($_POST['title']);
     $description = trim($_POST['description']);
     $location = trim($_POST['location']);
-    $userID = $_SESSION['user_id'];
+    $userID = $_SESSION['userID'];
     $attachment = null;
  
     // Handle the optional photo/file upload
