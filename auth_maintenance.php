@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 // Secure the page by checking for the lowercase 'maintenance' role set by your login script
-if (!isset($_SESSION['userID']) || $_SESSION['role'] !== 'maintenance') {
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'maintenance') {
     header("Location: login.php");
     exit();
 }
