@@ -70,7 +70,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             header("Location: userdb.php");
         }
-
         exit();
     } else {
         $error = "Incorrect email or password.";
@@ -80,130 +79,69 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FixIt Login</title>
-
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" href="loginstyle.css">
 </head>
-
 <body>
 
 <div class="browser">
-
     <div class="left-panel">
-
         <div class="branding">
             <img src="FixIt_Logo.png" alt="FixIt Logo" class="logo">
-
             <div class="logo-text">
                 <h3>FixIt</h3>
-
-                <p>
-                    FACULTY DAMAGE<br>
-                    REPORTING SYSTEM
-                </p>
+                <p>FACULTY DAMAGE<br>REPORTING SYSTEM</p>
             </div>
         </div>
-
         <div class="tagline">
-            Report and track<br>
-            damage issues easily<br>
-            at your faculty
+            Report and track<br>damage issues easily<br>at your faculty
         </div>
-
         <img src="worker.png" alt="Worker" class="worker">
-
     </div>
 
     <div class="right-panel">
-
         <h1>Welcome Back!</h1>
-
-        <p class="subtitle">
-            Please login to continue
-        </p>
+        <p class="subtitle">Please login to continue</p>
 
         <?php if (!empty($error)): ?>
-            <p style="
-                color:red;
-                background:#ffeaea;
-                padding:10px;
-                border-radius:5px;
-                margin-bottom:15px;">
+            <p style="color:red; background:#ffeaea; padding:10px; border-radius:5px; margin-bottom:15px;">
                 <?php echo $error; ?>
             </p>
         <?php endif; ?>
 
         <form action="login.php" method="POST">
-
             <label>Email</label>
-
-            <input
-                type="email"
-                name="email"
-                placeholder="Enter your email"
-                required>
+            <input type="email" name="email" placeholder="Enter your email" required>
 
             <label>Password</label>
-
             <div class="password-wrapper">
-
-                <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    placeholder="Enter your password"
-                    required>
-
-                <span class="eye" onclick="togglePassword()">
-                    👁
-                </span>
-
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                <span class="eye" onclick="togglePassword()">👁</span>
             </div>
 
             <div class="options">
-
                 <label class="remember">
-                    <input type="checkbox" name="remember">
-                    Remember Me
+                    <input type="checkbox" name="remember"> Remember Me
                 </label>
-
-                <a href="#">
-                    Forgot Password?
-                </a>
-
+                <a href="#">Forgot Password?</a>
             </div>
 
-            <button type="submit" class="login-btn">
-                Login
-            </button>
-
+            <button type="submit" class="login-btn">Login</button>
         </form>
 
         <div class="register">
-
-            Not registered yet?
-
-            <a href="register.php">
-                Sign Up
-            </a>
-
+            Not registered yet? <a href="register.php">Sign Up</a>
         </div>
-
     </div>
-
 </div>
 
 <script>
 function togglePassword() {
-
     var password = document.getElementById("password");
-
     if (password.type === "password") {
         password.type = "text";
     } else {
@@ -211,6 +149,5 @@ function togglePassword() {
     }
 }
 </script>
-
 </body>
 </html>

@@ -1,5 +1,5 @@
 <?php
-require 'auth_admin.php';
+require 'auth_admin.php'; // Fail ini wajib ada session_start() & semakan role admin
 require 'db_connect.php';
 
 // Fetch stats counters from the singular 'report' table
@@ -52,8 +52,7 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
             <a href="assign-task.php" class="nav-item">Assign Task</a>
         </nav>
         <div class="sidebar-spacer"></div>
-        <a href="login.php" class="nav-item">Logout</a>
-    </aside>
+        <a href="logout.php" class="nav-item">Logout</a> </aside>
 
     <main class="main">
         <header class="topbar">
@@ -163,7 +162,6 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
             });
         });
 
-        // Pie chart data comes straight from PHP-calculated stats above
         const pendingCount = <?php echo $pending_reports; ?>;
         const progressCount = <?php echo $progress_reports; ?>;
         const completedCount = <?php echo $completed_reports; ?>;
