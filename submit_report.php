@@ -36,6 +36,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $reportID = generateNextId($conn, 'report', 'reportID', 'R');
 
+    // ===== TEMPORARY DEBUG - remove after checking =====
+    var_dump($userID);
+    die();
+    // ===== END TEMPORARY DEBUG =====
+
     $stmt = $conn->prepare("INSERT INTO report (reportID, userID, title, description, location, attachment, status) VALUES (?, ?, ?, ?, ?, ?, 'Pending')");
     $stmt->bind_param("ssssss", $reportID, $userID, $title, $description, $location, $attachment);
 
