@@ -60,3 +60,133 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FixIt Login</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="loginstyle.css">
+</head>
+
+<body>
+
+    <div class="browser">
+
+        <!-- LEFT PANEL -->
+
+        <div class="left-panel">
+
+            <div class="branding">
+
+                <img src="FixIt_Logo.png"
+                     alt="FixIt Logo"
+                     class="logo">
+
+                <div class="logo-text">
+
+                    <h3>FixIt</h3>
+
+                    <p>
+                        FACULTY DAMAGE<br>
+                        REPORTING SYSTEM
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="tagline">
+
+                Report and track<br>
+                damage issues easily<br>
+                at your faculty
+
+            </div>
+
+        
+            <!-- Worker Illustration -->
+
+            <img src="worker.png"
+                 alt="Worker"
+                 class="worker">
+
+        </div>
+
+        <!-- RIGHT PANEL -->
+
+        <div class="right-panel">
+
+            <h1>Welcome Back!</h1>
+
+            <p class="subtitle">
+                Please login to continue
+            </p>
+
+            <label>Email</label>
+
+            <input type="email"
+                   placeholder="Enter your email">
+
+            <label>Password</label>
+
+            <div class="password-wrapper">
+
+                <input type="password"
+                       id="password"
+                       placeholder="Enter your password">
+
+                <span class="eye"
+                      onclick="togglePassword()">
+                    👁
+                </span>
+
+            </div>
+
+            <div class="options">
+
+                <label class="remember">
+
+                    <input type="checkbox">
+
+                    Remember Me
+
+                </label>
+
+                <a href="#">
+                    Forgot Password?
+                </a>
+
+            </div>
+
+            <button class="login-btn">
+
+                Login
+
+            </button>
+
+            <div class="register">
+
+                Not registered yet?
+
+                <a href="register.html">
+                    Sign Up
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
