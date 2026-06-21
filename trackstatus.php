@@ -197,33 +197,6 @@ $statsStmt->close();
  
                 <br>
  
-                <?php
-                    $statusOrder = ['Pending', 'In Progress', 'Completed'];
-                    $currentIndex = array_search($report['status'], $statusOrder);
-                ?>
- 
-                <div class="timeline">
- 
-                    <div class="timeline-item completed">
-                        Report Submitted
-                    </div>
- 
-                    <div class="timeline-item <?php echo ($currentIndex >= 0) ? ($report['status'] === 'Pending' ? 'active-status' : 'completed') : ''; ?>">
-                        Under Review
-                    </div>
- 
-                    <div class="timeline-item <?php echo ($report['status'] === 'In Progress') ? 'active-status' : ($currentIndex >= 2 ? 'completed' : ''); ?>">
-                        In Progress
-                    </div>
- 
-                    <div class="timeline-item <?php echo ($report['status'] === 'Completed') ? 'active-status' : ''; ?>">
-                        Completed
-                    </div>
- 
-                </div>
- 
-                <br>
- 
                 <?php if ($report['attachment'] && file_exists($report['attachment'])): ?>
                     <h3>Uploaded Photo</h3>
                     <?php
