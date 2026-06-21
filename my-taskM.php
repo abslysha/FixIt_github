@@ -2,22 +2,23 @@
 require 'auth_maintenance.php';
 require 'db_connect.php';
 
+$staff_id = $_SESSION['user_id'] ?? '';
 $tech_name = $_SESSION['name'] ?? '';
 $message = "";
 
-// Handle status updates requested by the technician
+// Handle status updates requested by the technician inline
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_task_status'])) {
     $report_id = mysqli_real_escape_string($conn, $_POST['report_id']);
     $new_status = mysqli_real_escape_string($conn, $_POST['status_value']);
     
-    $update_sql = "UPDATE report SET status='$new_status' WHERE reportID='$report_id' AND assigned_to='$tech_name'";
+    $update_sql = "UPDATE report SET status='$new_status' WHERE reportID='$report_id' AND staffID='$staff_id'";
     if (mysqli_query($conn, $update_sql)) {
         $message = "<p style='color: #2ab5b5; font-weight:600; margin: 15px 0;'>Task #$report_id successfully updated to '$new_status'!</p>";
     }
 }
 
-// Fetch all tasks for this technician
-$tasks_query = mysqli_query($conn, "SELECT * FROM report WHERE assigned_to = '$tech_name' ORDER BY reportID DESC");
+// Fetch all assignments for this technician matching their ERD Foreign Key
+$tasks_query = mysqli_query($conn, "SELECT * FROM report WHERE staffID = '$staff_id' ORDER BY reportID DESC");
 $total_count = mysqli_num_rows($tasks_query);
 
 $avatar_letter = strtoupper(substr($tech_name, 0, 1));
@@ -55,27 +56,23 @@ $avatar_letter = strtoupper(substr($tech_name, 0, 1));
                 Dashboard
             </a>
             <a href="my-taskM.php" class="nav-item active">
-                <i class="ti ti-checklist" style="font-size:20px;display:block;margin-bottom:4px;"></i>
+                <i class="ti ti-clipboard-list" style="font-size:20px;display:block;margin-bottom:4px;"></i>
                 My Task
             </a>
         </nav>
         <div class="sidebar-spacer"></div>
-        <a href="login.php" class="nav-item">
-            <i class="ti ti-logout" style="font-size:20px;display:block;margin-bottom:4px;"></i>
-            Logout
-        </a>
+        <a href="login.php" class="nav-item">Logout</a>
     </aside>
 
     <main class="main">
         <header class="topbar">
-            <h1 class="topbar-title">MY ASSIGNED TASKS</h1>
+            <h1 class="topbar-title">MY TASK</h1>
             <div class="topbar-actions">
-                <button class="icon-btn"><i class="ti ti-bell"></i></button>
                 <div class="avatar"><?php echo $avatar_letter; ?></div>
             </div>
         </header>
 
-        <div class="table-card" style="margin-top:20px;">
+        <div class="table-card">
             <?php echo $message; ?>
             
             <div class="table-controls">
@@ -91,12 +88,11 @@ $avatar_letter = strtoupper(substr($tech_name, 0, 1));
                 <thead>
                     <tr>
                         <th style="width: 40px;"><input type="checkbox" id="selectAll"></th>
-                        <th>reportID</th>
-                        <th>Issue</th>
-                        <th>Description</th>
+                        <th>Report ID</th>
                         <th>Location</th>
-                        <th>Date</th>
-                        <th>Status Badge</th>
+                        <th>Issue</th>
+                        <th>Status</th>
+                        <th>Date Reported</th>
                         <th>Update Status</th>
                     </tr>
                 </thead>
@@ -108,10 +104,8 @@ $avatar_letter = strtoupper(substr($tech_name, 0, 1));
                         <tr>
                             <td><input type="checkbox" class="row-checkbox"></td>
                             <td>#<?php echo $row['reportID']; ?></td>
-                            <td><strong><?php echo htmlspecialchars($row['issue'] ?? ''); ?></strong></td>
-                            <td><?php echo htmlspecialchars($row['description'] ?? ''); ?></td>
                             <td><?php echo htmlspecialchars($row['location'] ?? ''); ?></td>
-                            <td><?php echo isset($row['created_at']) ? date('Y-m-d', strtotime($row['created_at'])) : date('Y-m-d'); ?></td>
+                            <td><strong><?php echo htmlspecialchars($row['issue'] ?? 'No Issue Spec'); ?></strong></td>
                             <td>
                                 <?php 
                                 $badge_class = 'badge-pending';
@@ -122,6 +116,7 @@ $avatar_letter = strtoupper(substr($tech_name, 0, 1));
                                     <?php echo htmlspecialchars($current_status); ?>
                                 </span>
                             </td>
+                            <td style="color:#7a869a;"><?php echo isset($row['DateReported']) ? date('d M Y', strtotime($row['DateReported'])) : 'N/A'; ?></td>
                             <td>
                                 <form action="my-taskM.php" method="POST" style="margin:0;">
                                     <input type="hidden" name="update_task_status" value="1">
@@ -137,7 +132,7 @@ $avatar_letter = strtoupper(substr($tech_name, 0, 1));
                         <?php endwhile; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="8" style="text-align:center;color:#7a869a;padding:2rem;">No assigned tasks found.</td>
+                            <td colspan="7" style="text-align:center;color:#7a869a;padding:2rem;">No records found</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
@@ -159,10 +154,8 @@ $avatar_letter = strtoupper(substr($tech_name, 0, 1));
             });
         });
 
-        // Simple global select all toggler structure 
         document.getElementById("selectAll").addEventListener("change", function() {
-            let checkboxes = document.querySelectorAll(".row-checkbox");
-            checkboxes.forEach(cb => cb.checked = this.checked);
+            document.querySelectorAll(".row-checkbox").forEach(cb => cb.checked = this.checked);
         });
     </script>
 </body>

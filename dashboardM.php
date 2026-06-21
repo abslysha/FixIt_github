@@ -2,23 +2,30 @@
 require 'auth_maintenance.php';
 require 'db_connect.php';
 
+$staff_id = $_SESSION['user_id'] ?? '';
 $tech_name = $_SESSION['name'] ?? '';
 
-// Fetch stats counters assigned specifically to this technician out of the 'report' table
-$total_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM report WHERE assigned_to = '$tech_name'");
+// Fetch stats counters assigned specifically to this technician using staffID from ERD
+$total_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM report WHERE staffID = '$staff_id'");
 $total_tasks = mysqli_fetch_assoc($total_query)['total'] ?? 0;
 
-$pending_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM report WHERE assigned_to = '$tech_name' AND status='Pending'");
+$pending_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM report WHERE staffID = '$staff_id' AND status='Pending'");
 $pending_tasks = mysqli_fetch_assoc($pending_query)['total'] ?? 0;
 
-$progress_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM report WHERE assigned_to = '$tech_name' AND status='In Progress'");
+$progress_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM report WHERE staffID = '$staff_id' AND status='In Progress'");
 $progress_tasks = mysqli_fetch_assoc($progress_query)['total'] ?? 0;
 
-$completed_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM report WHERE assigned_to = '$tech_name' AND status='Completed'");
+$completed_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM report WHERE staffID = '$staff_id' AND status='Completed'");
 $completed_tasks = mysqli_fetch_assoc($completed_query)['total'] ?? 0;
 
-// Fetch top 5 recent tasks assigned to this technician
-$recent_tasks = mysqli_query($conn, "SELECT * FROM report WHERE assigned_to = '$tech_name' ORDER BY reportID DESC LIMIT 5");
+// Fetch top 5 recent tasks assigned to this technician using an INNER JOIN to get the staff name cleanly
+$recent_tasks = mysqli_query($conn, "
+    SELECT r.*, m.name as staff_name 
+    FROM report r 
+    INNER JOIN maintenance m ON r.staffID = m.staffID 
+    WHERE r.staffID = '$staff_id' 
+    ORDER BY r.reportID DESC LIMIT 5
+");
 
 $avatar_letter = strtoupper(substr($tech_name, 0, 1));
 ?>
@@ -44,50 +51,39 @@ $avatar_letter = strtoupper(substr($tech_name, 0, 1));
                 Dashboard
             </a>
             <a href="my-taskM.php" class="nav-item">
-                <i class="ti ti-checklist" style="font-size:20px;display:block;margin-bottom:4px;"></i>
+                <i class="ti ti-clipboard-list" style="font-size:20px;display:block;margin-bottom:4px;"></i>
                 My Task
             </a>
         </nav>
         <div class="sidebar-spacer"></div>
-        <a href="login.php" class="nav-item">
-            <i class="ti ti-logout" style="font-size:20px;display:block;margin-bottom:4px;"></i>
-            Logout
-        </a>
+        <a href="login.php" class="nav-item">Logout</a>
     </aside>
 
     <main class="main">
         <header class="topbar">
             <h1 class="topbar-title">MAINTENANCE DASHBOARD</h1>
             <div class="topbar-actions">
-                <button class="icon-btn"><i class="ti ti-bell"></i></button>
+                <button class="icon-btn">🔔<span class="notif-dot"></span></button>
                 <div class="avatar"><?php echo $avatar_letter; ?></div>
             </div>
         </header>
 
         <section class="stat-cards">
             <div class="stat-card blue">
-                <div class="stat-info">
-                    <span class="stat-label">Total Assigned</span>
-                    <span class="stat-value"><?php echo $total_tasks; ?></span>
-                </div>
+                <span class="stat-label">Total Assigned</span>
+                <span class="stat-value"><?php echo $total_tasks; ?></span>
             </div>
             <div class="stat-card yellow">
-                <div class="stat-info">
-                    <span class="stat-label">Pending</span>
-                    <span class="stat-value"><?php echo $pending_tasks; ?></span>
-                </div>
+                <span class="stat-label">Pending</span>
+                <span class="stat-value"><?php echo $pending_tasks; ?></span>
             </div>
             <div class="stat-card pink">
-                <div class="stat-info">
-                    <span class="stat-label">In Progress</span>
-                    <span class="stat-value"><?php echo $progress_tasks; ?></span>
-                </div>
+                <span class="stat-label">In Progress</span>
+                <span class="stat-value"><?php echo $progress_tasks; ?></span>
             </div>
             <div class="stat-card green">
-                <div class="stat-info">
-                    <span class="stat-label">Completed</span>
-                    <span class="stat-value"><?php echo $completed_tasks; ?></span>
-                </div>
+                <span class="stat-label">Completed</span>
+                <span class="stat-value"><?php echo $completed_tasks; ?></span>
             </div>
         </section>
 
@@ -110,11 +106,11 @@ $avatar_letter = strtoupper(substr($tech_name, 0, 1));
                         <?php while($row = mysqli_fetch_assoc($recent_tasks)): ?>
                         <tr>
                             <td>#<?php echo $row['reportID']; ?></td>
-                            <td><strong><?php echo htmlspecialchars($row['issue'] ?? ''); ?></strong></td>
+                            <td><strong><?php echo htmlspecialchars($row['issue'] ?? 'No Issue Spec'); ?></strong></td>
                             <td><?php echo htmlspecialchars($row['description'] ?? ''); ?></td>
                             <td><?php echo htmlspecialchars($row['location'] ?? ''); ?></td>
-                            <td><?php echo htmlspecialchars($row['assigned_to'] ?? ''); ?></td>
-                            <td><?php echo isset($row['created_at']) ? date('Y-m-d', strtotime($row['created_at'])) : date('Y-m-d'); ?></td>
+                            <td><?php echo htmlspecialchars($row['staff_name'] ?? ''); ?></td>
+                            <td><?php echo isset($row['DateReported']) ? date('Y-m-d', strtotime($row['DateReported'])) : 'N/A'; ?></td>
                             <td>
                                 <?php 
                                 $status = $row['status'] ?? 'Pending';

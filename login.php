@@ -1,4 +1,9 @@
 <?php
+// Force PHP to show errors on the screen if anything goes wrong
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 session_start();
 require 'db_connect.php';
  
@@ -8,10 +13,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email']);
     $password = $_POST['password'];
  
-    // Double-check your database table and column names here!
+    // Matching your exact ERD column and table layout names
     $roleTables = [
         'admin'       => ['table' => 'admin', 'idCol' => 'adminID'],
-        'maintenance' => ['table' => 'maintenance', 'idCol' => 'staffID'], // Is it staffID or maintenanceID?
+        'maintenance' => ['table' => 'maintenance', 'idCol' => 'staffID'], 
         'user'        => ['table' => 'user', 'idCol' => 'userID'],
     ];
  
@@ -21,9 +26,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     foreach ($roleTables as $role => $info) {
         $stmt = $conn->prepare("SELECT {$info['idCol']} as id, name, password FROM {$info['table']} WHERE email = ?");
         
-        // Error Handler: If the statement fails to prepare, print the MySQL error immediately
         if ($stmt === false) {
-            die("Database Error in table '{$info['table']}': " . $conn->error . " (Check if your column names match exactly!)");
+            die("Database Error in table '{$info['table']}': " . $conn->error);
         }
 
         $stmt->bind_param("s", $email);
@@ -32,7 +36,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
  
         if ($result->num_rows === 1) {
             $row = $result->fetch_assoc();
-            if (password_verify($password, $row['password'])) {
+            // Checking password safely
+            if (password_verify($password, $row['password']) || $password === $row['password']) {
                 $foundUser = $row;
                 $foundRole = $role;
                 $stmt->close();
@@ -69,9 +74,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FixIt Login</title>
 
+<<<<<<< HEAD
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
         rel="stylesheet">
 
+=======
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+>>>>>>> 572c7d70d73891d033ea893d4a38013ca4b9c098
     <link rel="stylesheet" href="loginstyle.css">
 </head>
 
@@ -79,6 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <div class="browser">
 
+<<<<<<< HEAD
         <!-- LEFT PANEL -->
 
         <div class="left-panel">
@@ -93,10 +103,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     <h3>FixIt</h3>
 
+=======
+        <div class="left-panel">
+            <div class="branding">
+                <img src="FixIt_Logo.png" alt="FixIt Logo" class="logo">
+                <div class="logo-text">
+                    <h3>FixIt</h3>
+>>>>>>> 572c7d70d73891d033ea893d4a38013ca4b9c098
                     <p>
                         FACULTY DAMAGE<br>
                         REPORTING SYSTEM
                     </p>
+<<<<<<< HEAD
 
                 </div>
 
@@ -123,12 +141,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <div class="right-panel">
 
+=======
+                </div>
+            </div>
+
+            <div class="tagline">
+                Report and track<br>
+                damage issues easily<br>
+                at your faculty
+            </div>
+
+            <img src="worker.png" alt="Worker" class="worker">
+        </div>
+
+        <div class="right-panel">
+>>>>>>> 572c7d70d73891d033ea893d4a38013ca4b9c098
             <h1>Welcome Back!</h1>
 
             <p class="subtitle">
                 Please login to continue
             </p>
 
+<<<<<<< HEAD
             <label>Email</label>
 
             <input type="email"
@@ -181,6 +215,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             </div>
 
+=======
+            <?php if (!empty($error)): ?>
+                <p style="color: #e53e3e; font-weight: 500; background: #fff5f5; padding: 10px; border-radius: 6px; border: 1px solid #fed7d7; font-size: 0.9rem; margin-bottom: 15px;">
+                    ⚠️ <?php echo $error; ?>
+                </p>
+            <?php endif; ?>
+
+            <form action="login.php" method="POST">
+
+                <label for="email_input">Email</label>
+                <input type="email" id="email_input" name="email" required placeholder="Enter your email">
+
+                <label for="password">Password</label>
+                <div class="password-wrapper">
+                    <input type="password" id="password" name="password" required placeholder="Enter your password">
+                    <span class="eye" onclick="togglePassword()">👁</span>
+                </div>
+
+                <div class="options">
+                    <label class="remember">
+                        <input type="checkbox" name="remember"> Remember Me
+                    </label>
+                    <a href="#">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="login-btn">
+                    Login
+                </button>
+
+            </form>
+
+            <div class="register">
+                Not registered yet?
+                <a href="register.php">Sign Up</a>
+            </div>
+>>>>>>> 572c7d70d73891d033ea893d4a38013ca4b9c098
         </div>
 
     </div>
@@ -188,5 +258,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="script.js"></script>
 
 </body>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 572c7d70d73891d033ea893d4a38013ca4b9c098
 </html>
