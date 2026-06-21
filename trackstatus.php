@@ -162,44 +162,33 @@ $statsStmt->close();
                 </p>
  
             <?php else: ?>
- 
-                <div class="track-header">
- 
-                    <h2>Report <?php echo htmlspecialchars($report['reportID']); ?></h2>
- 
-                    <?php
-                        $badgeClass = 'progress';
-                        if ($report['status'] === 'Completed') $badgeClass = 'completed';
-                        if ($report['status'] === 'Pending') $badgeClass = 'pending';
-                    ?>
-                    <span class="status-badge <?php echo $badgeClass; ?>">
-                        <?php echo htmlspecialchars($report['status']); ?>
-                    </span>
- 
-                </div>
+
+                <h2 class="report-title">REPORT <?php echo htmlspecialchars($report['reportID']); ?></h2>
+
+                <p class="report-status-text"><?php echo htmlspecialchars(strtoupper($report['status'])); ?></p>
 
                 <div class="report-detail-grid">
 
                     <div class="detail-item">
-                        <span class="detail-label">Location</span>
-                        <span class="detail-value"><?php echo htmlspecialchars($report['location']); ?></span>
+                        <span class="detail-label">LOCATION :</span>
+                        <span class="detail-value"> <?php echo htmlspecialchars(strtoupper($report['location'])); ?></span>
                     </div>
 
                     <div class="detail-item">
-                        <span class="detail-label">Issue</span>
-                        <span class="detail-value"><?php echo htmlspecialchars($report['title']); ?></span>
+                        <span class="detail-label">ISSUE :</span>
+                        <span class="detail-value"> <?php echo htmlspecialchars(strtoupper($report['title'])); ?></span>
                     </div>
 
                     <div class="detail-item">
-                        <span class="detail-label">Description</span>
-                        <span class="detail-value"><?php echo htmlspecialchars($report['description']); ?></span>
+                        <span class="detail-label">DESCRIPTION :</span>
+                        <span class="detail-value"> <?php echo htmlspecialchars(strtoupper($report['description'])); ?></span>
                     </div>
 
                 </div>
- 
+
                 <?php if ($report['attachment'] && file_exists($report['attachment'])): ?>
                     <div class="track-photo-section">
-                    <h3>Uploaded Photo</h3>
+                    <h3>UPLOADED PHOTO</h3>
                     <?php
                         $ext = strtolower(pathinfo($report['attachment'], PATHINFO_EXTENSION));
                     ?>

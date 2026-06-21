@@ -858,62 +858,48 @@ tbody tr:hover{
    TRACK STATUS DETAIL
 ========================= */
 
-    .track-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:20px;
+    .track-header h2,
+    .report-title{
+    font-family:'Arial MT Pro', Arial, sans-serif;
+    font-size:20px;
+    font-weight:bold;
+    color:#000000;
+    margin-bottom:4px;
     }
 
-    .track-header h2{
-    font-family:'Bebas Neue',sans-serif;
-    font-size:26px;
-    letter-spacing:1px;
-    color:var(--primary);
+    .report-status-text{
+    font-family:'Arial MT Pro', Arial, sans-serif;
+    font-size:14px;
+    color:#000000;
+    margin-bottom:18px;
     }
 
     .report-detail-grid{
     display:flex;
     flex-direction:column;
-    gap:18px;
-    margin-bottom:24px;
+    gap:4px;
+    margin-bottom:18px;
     }
 
     .detail-item{
-    display:flex;
-    flex-direction:column;
-    gap:6px;
+    font-family:'Arial MT Pro', Arial, sans-serif;
+    font-size:14px;
+    color:#000000;
     }
 
     .detail-label{
-    font-size:12px;
-    font-weight:700;
-    text-transform:uppercase;
-    letter-spacing:1px;
-    color:var(--text-muted);
+    font-weight:bold;
     }
 
     .detail-value{
-    font-size:15px;
-    font-weight:bold;
-    font-family:Arial, sans-serif;
-    color:#000000;
-    background:#f7f9fc;
-    border:1px solid var(--border);
-    border-radius:10px;
-    padding:12px 16px;
-    }
-
-    .track-photo-section{
-    margin-top:8px;
+    font-weight:normal;
     }
 
     .track-photo-section h3{
-    font-size:13px;
-    font-weight:700;
-    text-transform:uppercase;
-    letter-spacing:1px;
-    color:var(--text-muted);
+    font-family:'Arial MT Pro', Arial, sans-serif;
+    font-size:14px;
+    font-weight:bold;
+    color:#000000;
     margin-bottom:10px;
     }
 
