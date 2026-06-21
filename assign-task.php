@@ -69,7 +69,7 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
         <form class="assign-form" action="assign-task.php" method="POST">
             <div class="form-group">
                 <label>Report ID (Look up numbers in your reports log tab)</label>
-                <input type="number" name="report_id" placeholder="Enter Report ID (e.g. 1)" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                <input type="text" name="report_id" placeholder="Enter Report ID (e.g. 1)" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
             </div>
 
             <div class="form-group" style="margin-top: 15px;">
