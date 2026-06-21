@@ -74,9 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FixIt Login</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
-        rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="loginstyle.css">
 </head>
 
@@ -84,108 +82,68 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <div class="browser">
 
-        <!-- LEFT PANEL -->
-
         <div class="left-panel">
-
             <div class="branding">
-
-                <img src="FixIt_Logo.png"
-                     alt="FixIt Logo"
-                     class="logo">
-
+                <img src="FixIt_Logo.png" alt="FixIt Logo" class="logo">
                 <div class="logo-text">
-
                     <h3>FixIt</h3>
-
                     <p>
                         FACULTY DAMAGE<br>
                         REPORTING SYSTEM
                     </p>
-
                 </div>
-
             </div>
 
             <div class="tagline">
-
                 Report and track<br>
                 damage issues easily<br>
                 at your faculty
-
             </div>
 
-        
-            <!-- Worker Illustration -->
-
-            <img src="worker.png"
-                 alt="Worker"
-                 class="worker">
-
+            <img src="worker.png" alt="Worker" class="worker">
         </div>
 
-        <!-- RIGHT PANEL -->
-
         <div class="right-panel">
-
             <h1>Welcome Back!</h1>
 
             <p class="subtitle">
                 Please login to continue
             </p>
 
-            <label>Email</label>
+            <?php if (!empty($error)): ?>
+                <p style="color: #e53e3e; font-weight: 500; background: #fff5f5; padding: 10px; border-radius: 6px; border: 1px solid #fed7d7; font-size: 0.9rem; margin-bottom: 15px;">
+                    ⚠️ <?php echo $error; ?>
+                </p>
+            <?php endif; ?>
 
-            <input type="email"
-                   placeholder="Enter your email">
+            <form action="login.php" method="POST">
 
-            <label>Password</label>
+                <label for="email_input">Email</label>
+                <input type="email" id="email_input" name="email" required placeholder="Enter your email">
 
-            <div class="password-wrapper">
+                <label for="password">Password</label>
+                <div class="password-wrapper">
+                    <input type="password" id="password" name="password" required placeholder="Enter your password">
+                    <span class="eye" onclick="togglePassword()">👁</span>
+                </div>
 
-                <input type="password"
-                       id="password"
-                       placeholder="Enter your password">
+                <div class="options">
+                    <label class="remember">
+                        <input type="checkbox" name="remember"> Remember Me
+                    </label>
+                    <a href="#">Forgot Password?</a>
+                </div>
 
-                <span class="eye"
-                      onclick="togglePassword()">
-                    👁
-                </span>
+                <button type="submit" class="login-btn">
+                    Login
+                </button>
 
-            </div>
-
-            <div class="options">
-
-                <label class="remember">
-
-                    <input type="checkbox">
-
-                    Remember Me
-
-                </label>
-
-                <a href="#">
-                    Forgot Password?
-                </a>
-
-            </div>
-
-            <button class="login-btn">
-
-                Login
-
-            </button>
+            </form>
 
             <div class="register">
-
                 Not registered yet?
-
-                <a href="register.html">
-                    Sign Up
-                </a>
-
+                <a href="register.html">Sign Up</a>
             </div>
-
         </div>
 
     </div>
@@ -193,5 +151,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="script.js"></script>
 
 </body>
-
 </html>
