@@ -93,8 +93,8 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
 
         <section class="charts-row">
             <div class="card">
-                <h3 class="card-title">Daily Reports Submitted (Last 30 Days)</h3>
-                <div class="chart-placeholder">Data updates dynamically</div>
+                <h3 class="card-title">Report Status Breakdown</h3>
+                <canvas id="statusPieChart" style="max-height: 220px;"></canvas>
             </div>
             <div class="card">
                 <h3 class="card-title">Report Status Overview</h3>
@@ -131,11 +131,11 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
                     <?php while($row = mysqli_fetch_assoc($recent_reports)): ?>
                     <tr>
                         <td>#<?php echo $row['reportID']; ?></td>
-                        <td><strong><?php echo htmlspecialchars($row['issue'] ?? ''); ?></strong></td>
+                        <td><strong><?php echo htmlspecialchars($row['title'] ?? ''); ?></strong></td>
                         <td><?php echo htmlspecialchars($row['description'] ?? ''); ?></td>
                         <td><?php echo htmlspecialchars($row['location'] ?? ''); ?></td>
-                        <td><?php echo htmlspecialchars($row['assigned_to'] ?? 'Unassigned'); ?></td>
-                        <td><?php echo isset($row['created_at']) ? date('Y-m-d', strtotime($row['created_at'])) : date('Y-m-d'); ?></td>
+                        <td><?php echo htmlspecialchars($row['staffID'] ?? 'Unassigned'); ?></td>
+                        <td><?php echo isset($row['DateReported']) ? date('Y-m-d', strtotime($row['DateReported'])) : date('Y-m-d'); ?></td>
                         <td>
                             <?php 
                             $status = $row['status'] ?? 'Pending';
@@ -154,12 +154,36 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
         </section>
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.getElementById("dashboardSearch").addEventListener("keyup", function () {
             let filter = this.value.toLowerCase();
             document.querySelectorAll("#dashboardTable tr").forEach(row => {
                 row.style.display = row.innerText.toLowerCase().includes(filter) ? "" : "none";
             });
+        });
+
+        // Pie chart data comes straight from PHP-calculated stats above
+        const pendingCount = <?php echo $pending_reports; ?>;
+        const progressCount = <?php echo $progress_reports; ?>;
+        const completedCount = <?php echo $completed_reports; ?>;
+
+        new Chart(document.getElementById('statusPieChart'), {
+            type: 'pie',
+            data: {
+                labels: ['Pending', 'In Progress', 'Completed'],
+                datasets: [{
+                    data: [pendingCount, progressCount, completedCount],
+                    backgroundColor: ['#f5c842', '#f5a0a0', '#7ecb7e'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
         });
     </script>
 </body>
