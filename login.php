@@ -8,10 +8,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email']);
     $password = $_POST['password'];
  
-    // Check all three tables since accounts are split by role
+    // Double-check your database table and column names here!
     $roleTables = [
         'admin'       => ['table' => 'admin', 'idCol' => 'adminID'],
-        'maintenance' => ['table' => 'maintenance', 'idCol' => 'staffID'],
+        'maintenance' => ['table' => 'maintenance', 'idCol' => 'staffID'], // Is it staffID or maintenanceID?
         'user'        => ['table' => 'user', 'idCol' => 'userID'],
     ];
  
@@ -20,6 +20,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
  
     foreach ($roleTables as $role => $info) {
         $stmt = $conn->prepare("SELECT {$info['idCol']} as id, name, password FROM {$info['table']} WHERE email = ?");
+        
+        // Error Handler: If the statement fails to prepare, print the MySQL error immediately
+        if ($stmt === false) {
+            die("Database Error in table '{$info['table']}': " . $conn->error . " (Check if your column names match exactly!)");
+        }
+
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -44,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($foundRole === 'admin') {
             header("Location: dashboard.php");
         } elseif ($foundRole === 'maintenance') {
-            header("Location: dashboardM.php"); // 👈 Updated to redirect to your new maintenance panel filename
+            header("Location: dashboardM.php");
         } else {
             header("Location: userdb.php");
         }
@@ -54,138 +60,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-<!DOCTYPE html>
-<html lang="en">
- 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FixIt Login</title>
- 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
-        rel="stylesheet">
- 
-    <link rel="stylesheet" href="loginstyle.css">
-</head>
- 
-<body>
- 
-    <div class="browser">
- 
-        <div class="left-panel">
- 
-            <div class="branding">
- 
-                <img src="FixIt_Logo.png"
-                     alt="FixIt Logo"
-                     class="logo">
- 
-                <div class="logo-text">
- 
-                    <h3>FixIt</h3>
- 
-                    <p>
-                        FACULTY DAMAGE<br>
-                        REPORTING SYSTEM
-                    </p>
- 
-                </div>
- 
-            </div>
- 
-            <div class="tagline">
- 
-                Report and track<br>
-                damage issues easily<br>
-                at your faculty
- 
-            </div>
- 
- 
-            <img src="worker.png"
-                 alt="Worker"
-                 class="worker">
- 
-        </div>
- 
-        <div class="right-panel">
- 
-            <h1>Welcome Back!</h1>
- 
-            <p class="subtitle">
-                Please login to continue
-            </p>
- 
-            <?php if ($error): ?>
-                <p style="color:#e53e3e; font-size:13px; margin-bottom:10px;"><?php echo htmlspecialchars($error); ?></p>
-            <?php endif; ?>
- 
-            <form action="login.php" method="POST">
- 
-                <label>Email</label>
- 
-                <input type="email"
-                       name="email"
-                       placeholder="Enter your email"
-                       required>
- 
-                <label>Password</label>
- 
-                <div class="password-wrapper">
- 
-                    <input type="password"
-                           id="password"
-                           name="password"
-                           placeholder="Enter your password"
-                           required>
- 
-                    <span class="eye"
-                          onclick="togglePassword()">
-                        👁
-                    </span>
- 
-                </div>
- 
-                <div class="options">
- 
-                    <label class="remember">
- 
-                        <input type="checkbox">
- 
-                        Remember Me
- 
-                    </label>
- 
-                    <a href="#">
-                        Forgot Password?
-                    </a>
- 
-                </div>
- 
-                <button class="login-btn" type="submit">
- 
-                    Login
- 
-                </button>
- 
-            </form>
- 
-            <div class="register">
- 
-                Not registered yet?
- 
-                <a href="register.php">
-                    Sign Up
-                </a>
- 
-            </div>
- 
-        </div>
- 
-    </div>
- 
-    <script src="script.js"></script>
- 
-</body>
- 
-</html>
