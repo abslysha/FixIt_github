@@ -61,11 +61,19 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
             </thead>
             <tbody id="userTable">
                 <?php while($user = mysqli_fetch_assoc($users_query)): ?>
+                <?php
+                    $email = $user['email'] ?? '';
+                    if (stripos($email, '@staff.com') !== false) {
+                        $role = 'Staff';
+                    } else {
+                        $role = 'Student'; // default kalau @student.com atau domain lain (gmail.com, dll)
+                    }
+                ?>
                 <tr>
                     <td><?php echo $user['userID']; ?></td>
                     <td><?php echo htmlspecialchars($user['name'] ?? ''); ?></td>
                     <td><?php echo htmlspecialchars($user['email'] ?? ''); ?></td>
-                    <td>Student / Staff</td>
+                    <td><?php echo $role; ?></td>
                     <td>
                         <span class="status-badge badge-completed">Active</span>
                     </td>
