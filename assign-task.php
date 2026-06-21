@@ -49,7 +49,7 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
         <a href="assign-task.php" class="nav-item active">Assign Task</a>
     </nav>
     <div class="sidebar-spacer"></div>
-    <a href="login.php" class="nav-item">Logout</a>
+   <a href="logout.php" class="nav-item">Logout</a>
 </aside>
 
 <main class="main">
