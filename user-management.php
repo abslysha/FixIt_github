@@ -62,7 +62,7 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
             <tbody id="userTable">
                 <?php while($user = mysqli_fetch_assoc($users_query)): ?>
                 <tr>
-                    <td>U0<?php echo $user['userID']; ?></td>
+                    <td><?php echo $user['userID']; ?></td>
                     <td><?php echo htmlspecialchars($user['name'] ?? ''); ?></td>
                     <td><?php echo htmlspecialchars($user['email'] ?? ''); ?></td>
                     <td>Student / Staff</td>
