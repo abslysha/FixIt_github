@@ -106,7 +106,7 @@ $avatar_letter = strtoupper(substr($tech_name, 0, 1));
                         <?php while($row = mysqli_fetch_assoc($recent_tasks)): ?>
                         <tr>
                             <td>#<?php echo $row['reportID']; ?></td>
-                            <td><strong><?php echo htmlspecialchars($row['issue'] ?? 'No Issue Spec'); ?></strong></td>
+                            <td><strong><?php echo htmlspecialchars($row['title'] ?? 'No Title'); ?></strong></td>
                             <td><?php echo htmlspecialchars($row['description'] ?? ''); ?></td>
                             <td><?php echo htmlspecialchars($row['location'] ?? ''); ?></td>
                             <td><?php echo htmlspecialchars($row['staff_name'] ?? ''); ?></td>
