@@ -10,10 +10,46 @@ $message = "";
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_task_status'])) {
     $report_id = mysqli_real_escape_string($conn, $_POST['report_id']);
     $new_status = mysqli_real_escape_string($conn, $_POST['status_value']);
-    
-    $update_sql = "UPDATE report SET status='$new_status' WHERE reportID='$report_id' AND staffID='$staff_id'";
-    if (mysqli_query($conn, $update_sql)) {
-        $message = "<p style='color: #2ab5b5; font-weight:600; margin: 15px 0;'>Task #$report_id successfully updated to '$new_status'!</p>";
+
+    if ($new_status === 'Completed') {
+        // Completed status requires a proof photo upload
+        if (isset($_FILES['proof_photo']) && $_FILES['proof_photo']['error'] === UPLOAD_ERR_OK) {
+
+            $allowedExt = ['png', 'jpg', 'jpeg'];
+            $originalName = $_FILES['proof_photo']['name'];
+            $ext = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+
+            if (in_array($ext, $allowedExt)) {
+                $uploadDir = 'uploads/';
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0777, true);
+                }
+
+                $newFileName = uniqid('proof_', true) . '.' . $ext;
+                $destination = $uploadDir . $newFileName;
+
+                if (move_uploaded_file($_FILES['proof_photo']['tmp_name'], $destination)) {
+                    $update_sql = "UPDATE report SET status='Completed', proof_photo='" . mysqli_real_escape_string($conn, $destination) . "' WHERE reportID='$report_id' AND staffID='$staff_id'";
+                    if (mysqli_query($conn, $update_sql)) {
+                        $message = "<p style='color: #2ab5b5; font-weight:600; margin: 15px 0;'>Task #$report_id marked as Completed with proof photo!</p>";
+                    } else {
+                        $message = "<p style='color: #e53e3e; font-weight:600; margin: 15px 0;'>Database error: " . mysqli_error($conn) . "</p>";
+                    }
+                } else {
+                    $message = "<p style='color: #e53e3e; font-weight:600; margin: 15px 0;'>Failed to upload proof photo. Please try again.</p>";
+                }
+            } else {
+                $message = "<p style='color: #e53e3e; font-weight:600; margin: 15px 0;'>Invalid file type. Only PNG, JPG, JPEG allowed.</p>";
+            }
+        } else {
+            $message = "<p style='color: #e53e3e; font-weight:600; margin: 15px 0;'>Please upload a proof photo to mark this task as Completed.</p>";
+        }
+    } else {
+        // Pending / In Progress don't need a photo
+        $update_sql = "UPDATE report SET status='$new_status' WHERE reportID='$report_id' AND staffID='$staff_id'";
+        if (mysqli_query($conn, $update_sql)) {
+            $message = "<p style='color: #2ab5b5; font-weight:600; margin: 15px 0;'>Task #$report_id successfully updated to '$new_status'!</p>";
+        }
     }
 }
 
@@ -94,6 +130,65 @@ $avatar_letter = strtoupper(substr($tech_name, 0, 1));
             cursor: pointer;
             line-height: 1;
         }
+
+        /* ===== Proof Upload Modal ===== */
+        .proof-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(26, 26, 46, 0.55);
+            z-index: 1001;
+            justify-content: center;
+            align-items: center;
+        }
+        .proof-modal-overlay.active {
+            display: flex;
+        }
+        .proof-modal-box {
+            background: white;
+            border-radius: 14px;
+            padding: 28px;
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+        }
+        .proof-modal-box h3 {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 16px;
+            margin-bottom: 14px;
+            color: #1a1a2e;
+        }
+        .proof-modal-box input[type="file"] {
+            width: 100%;
+            margin-bottom: 16px;
+            font-size: 13px;
+        }
+        .proof-modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        .proof-btn-cancel {
+            background: #e53e3e;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .proof-btn-submit {
+            background: #2ab5b5;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -111,7 +206,7 @@ $avatar_letter = strtoupper(substr($tech_name, 0, 1));
             </a>
         </nav>
         <div class="sidebar-spacer"></div>
-        <a href="login.php" class="nav-item">Logout</a>
+        <a href="logout.php" class="nav-item">Logout</a>
     </aside>
 
     <main class="main">
@@ -142,6 +237,7 @@ $avatar_letter = strtoupper(substr($tech_name, 0, 1));
                         <th>Location</th>
                         <th>Issue</th>
                         <th>Photo</th>
+                        <th>Proof Photo</th>
                         <th>Status</th>
                         <th>Date Reported</th>
                         <th>Update Status</th>
@@ -153,6 +249,7 @@ $avatar_letter = strtoupper(substr($tech_name, 0, 1));
                             $current_status = $row['status'] ?? 'Pending';
                             $attachment = $row['attachment'] ?? null;
                             $ext = $attachment ? strtolower(pathinfo($attachment, PATHINFO_EXTENSION)) : '';
+                            $proof = $row['proof_photo'] ?? null;
                         ?>
                         <tr>
                             <td><input type="checkbox" class="row-checkbox"></td>
@@ -171,6 +268,13 @@ $avatar_letter = strtoupper(substr($tech_name, 0, 1));
                                 <?php endif; ?>
                             </td>
                             <td>
+                                <?php if ($proof && file_exists($proof)): ?>
+                                    <img src="<?php echo htmlspecialchars($proof); ?>" class="task-thumb" alt="Proof photo" onclick="openPhotoModal('<?php echo htmlspecialchars($proof); ?>')">
+                                <?php else: ?>
+                                    <span class="no-attachment">Not uploaded</span>
+                                <?php endif; ?>
+                            </td>
+                            <td>
                                 <?php 
                                 $badge_class = 'badge-pending';
                                 if($current_status == 'In Progress') $badge_class = 'badge-inprogress';
@@ -182,21 +286,17 @@ $avatar_letter = strtoupper(substr($tech_name, 0, 1));
                             </td>
                             <td style="color:#7a869a;"><?php echo isset($row['DateReported']) ? date('d M Y', strtotime($row['DateReported'])) : 'N/A'; ?></td>
                             <td>
-                                <form action="my-taskM.php" method="POST" style="margin:0;">
-                                    <input type="hidden" name="update_task_status" value="1">
-                                    <input type="hidden" name="report_id" value="<?php echo $row['reportID']; ?>">
-                                    <select name="status_value" class="inline-select" onchange="this.form.submit()">
-                                        <option value="Pending" <?php if($current_status == 'Pending') echo 'selected'; ?>>Pending</option>
-                                        <option value="In Progress" <?php if($current_status == 'In Progress') echo 'selected'; ?>>In Progress</option>
-                                        <option value="Completed" <?php if($current_status == 'Completed') echo 'selected'; ?>>Completed</option>
-                                    </select>
-                                </form>
+                                <select name="status_value" class="inline-select status-dropdown" data-reportid="<?php echo $row['reportID']; ?>">
+                                    <option value="Pending" <?php if($current_status == 'Pending') echo 'selected'; ?>>Pending</option>
+                                    <option value="In Progress" <?php if($current_status == 'In Progress') echo 'selected'; ?>>In Progress</option>
+                                    <option value="Completed" <?php if($current_status == 'Completed') echo 'selected'; ?>>Completed</option>
+                                </select>
                             </td>
                         </tr>
                         <?php endwhile; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="8" style="text-align:center;color:#7a869a;padding:2rem;">No records found</td>
+                            <td colspan="9" style="text-align:center;color:#7a869a;padding:2rem;">No records found</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
@@ -208,13 +308,37 @@ $avatar_letter = strtoupper(substr($tech_name, 0, 1));
         </div>
     </main>
 
-    <!-- Photo Popup Modal -->
+    <!-- Photo Popup Modal (view existing photos) -->
     <div class="photo-modal-overlay" id="photoModalOverlay" onclick="closePhotoModal(event)">
         <div class="photo-modal-content">
             <span class="photo-modal-close" onclick="closePhotoModal(event)">&times;</span>
             <img id="photoModalImg" src="" alt="Report photo full size">
         </div>
     </div>
+
+    <!-- Proof Upload Modal (shown when marking Completed) -->
+    <div class="proof-modal-overlay" id="proofModalOverlay">
+        <div class="proof-modal-box">
+            <h3>Upload proof photo to mark this task as Completed</h3>
+            <form action="my-taskM.php" method="POST" enctype="multipart/form-data" id="proofForm">
+                <input type="hidden" name="update_task_status" value="1">
+                <input type="hidden" name="status_value" value="Completed">
+                <input type="hidden" name="report_id" id="proofReportId" value="">
+                <input type="file" name="proof_photo" accept=".png,.jpg,.jpeg" required>
+                <div class="proof-modal-actions">
+                    <button type="button" class="proof-btn-cancel" id="proofCancelBtn">Cancel</button>
+                    <button type="submit" class="proof-btn-submit">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Hidden form used for instant Pending / In Progress updates (no photo needed) -->
+    <form action="my-taskM.php" method="POST" id="quickStatusForm" style="display:none;">
+        <input type="hidden" name="update_task_status" value="1">
+        <input type="hidden" name="report_id" id="quickReportId" value="">
+        <input type="hidden" name="status_value" id="quickStatusValue" value="">
+    </form>
 
     <script>
         document.getElementById("taskSearch").addEventListener("keyup", function () {
@@ -236,12 +360,48 @@ $avatar_letter = strtoupper(substr($tech_name, 0, 1));
         }
 
         function closePhotoModal(event) {
-            // Only close if clicking the overlay or the X, not the image itself
             if (event.target.id === "photoModalOverlay" || event.target.classList.contains("photo-modal-close")) {
                 document.getElementById("photoModalOverlay").classList.remove("active");
                 document.getElementById("photoModalImg").src = "";
             }
         }
+
+        // Handle status dropdown changes
+        const proofModal = document.getElementById("proofModalOverlay");
+        const proofReportIdInput = document.getElementById("proofReportId");
+        const proofCancelBtn = document.getElementById("proofCancelBtn");
+
+        document.querySelectorAll(".status-dropdown").forEach(select => {
+            // Remember the previously selected value so Cancel can revert it
+            select.dataset.prevValue = select.value;
+
+            select.addEventListener("change", function() {
+                const reportId = this.dataset.reportid;
+
+                if (this.value === "Completed") {
+                    // Open the proof upload modal instead of submitting directly
+                    proofReportIdInput.value = reportId;
+                    proofModal.classList.add("active");
+                    proofModal.dataset.activeSelect = reportId;
+                } else {
+                    // Pending / In Progress: submit immediately, no photo required
+                    document.getElementById("quickReportId").value = reportId;
+                    document.getElementById("quickStatusValue").value = this.value;
+                    document.getElementById("quickStatusForm").submit();
+                }
+            });
+        });
+
+        proofCancelBtn.addEventListener("click", function() {
+            // Revert the dropdown back to its previous value
+            const activeId = proofModal.dataset.activeSelect;
+            document.querySelectorAll(".status-dropdown").forEach(select => {
+                if (select.dataset.reportid === activeId) {
+                    select.value = select.dataset.prevValue;
+                }
+            });
+            proofModal.classList.remove("active");
+        });
     </script>
 </body>
 </html>

@@ -2,11 +2,15 @@
 require 'auth_admin.php';
 require 'db_connect.php';
 
-// Fetch all logs from your true singular table 'report' sorted by 'reportID'
-$all_reports = mysqli_query($conn, "SELECT * FROM report ORDER BY reportID DESC");
+// JOIN dengan table user untuk dapatkan nama dan phone
+$all_reports = mysqli_query($conn, "
+    SELECT r.*, u.name AS user_name, u.phone AS user_phone, u.email AS user_email
+    FROM report r
+    LEFT JOIN user u ON r.userID = u.userID
+    ORDER BY r.reportID DESC
+");
 $total_count = mysqli_num_rows($all_reports);
 
-// Extract active admin session's dynamic avatar letter
 $admin_name = $_SESSION['name'] ?? 'Admin';
 $avatar_letter = strtoupper(substr($admin_name, 0, 1));
 ?>
@@ -70,6 +74,7 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
                         <th>Location</th>
                         <th>Date</th>
                         <th>Status</th>
+                        <th>Detail</th>
                     </tr>
                 </thead>
                 <tbody id="reportTable">
@@ -80,7 +85,7 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
                             <td><strong><?php echo htmlspecialchars($row['title'] ?? ''); ?></strong></td>
                             <td><?php echo htmlspecialchars($row['description'] ?? ''); ?></td>
                             <td><?php echo htmlspecialchars($row['location'] ?? ''); ?></td>
-                            <td><?php echo isset($row['created_at']) ? date('Y-m-d', strtotime($row['created_at'])) : date('Y-m-d'); ?></td>
+                            <td><?php echo isset($row['DateReported']) ? date('Y-m-d', strtotime($row['DateReported'])) : date('Y-m-d'); ?></td>
                             <td>
                                 <?php 
                                 $status = $row['status'] ?? 'Pending';
@@ -92,11 +97,25 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
                                     <?php echo htmlspecialchars($status); ?>
                                 </span>
                             </td>
+                            <td>
+                                <button type="button" class="view-detail-btn"
+                                    data-reportid="<?php echo htmlspecialchars($row['reportID']); ?>"
+                                    data-name="<?php echo htmlspecialchars($row['user_name'] ?? 'N/A'); ?>"
+                                    data-phone="<?php echo htmlspecialchars($row['user_phone'] ?? 'N/A'); ?>"
+                                    data-email="<?php echo htmlspecialchars($row['user_email'] ?? 'N/A'); ?>"
+                                    data-title="<?php echo htmlspecialchars($row['title'] ?? ''); ?>"
+                                    data-description="<?php echo htmlspecialchars($row['description'] ?? ''); ?>"
+                                    data-location="<?php echo htmlspecialchars($row['location'] ?? ''); ?>"
+                                    data-status="<?php echo htmlspecialchars($status); ?>"
+                                    data-proof="<?php echo htmlspecialchars($row['proof_photo'] ?? ''); ?>">
+                                    View Detail
+                                </button>
+                            </td>
                         </tr>
                         <?php endwhile; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="6" style="text-align: center; color: #888; padding: 20px;">No records found in the database.</td>
+                            <td colspan="7" style="text-align: center; color: #888; padding: 20px;">No records found in the database.</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
@@ -108,6 +127,47 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
         </section>
     </main>
 
+    <!-- MODAL: Report Detail -->
+    <div id="detailModal" class="modal-overlay">
+        <div class="modal-box">
+            <button type="button" class="modal-close" id="modalCloseBtn">&times;</button>
+            <h2 id="modalReportID">Report #</h2>
+            <span id="modalStatusBadge" class="status-badge">Status</span>
+
+            <div class="modal-detail-grid">
+                <div class="modal-detail-item">
+                    <span class="modal-label">Reported By</span>
+                    <span class="modal-value" id="modalName"></span>
+                </div>
+                <div class="modal-detail-item">
+                    <span class="modal-label">Phone Number</span>
+                    <span class="modal-value" id="modalPhone"></span>
+                </div>
+                <div class="modal-detail-item">
+                    <span class="modal-label">Email</span>
+                    <span class="modal-value" id="modalEmail"></span>
+                </div>
+                <div class="modal-detail-item">
+                    <span class="modal-label">Issue</span>
+                    <span class="modal-value" id="modalTitle"></span>
+                </div>
+                <div class="modal-detail-item">
+                    <span class="modal-label">Description</span>
+                    <span class="modal-value" id="modalDescription"></span>
+                </div>
+                <div class="modal-detail-item">
+                    <span class="modal-label">Location</span>
+                    <span class="modal-value" id="modalLocation"></span>
+                </div>
+            </div>
+
+            <div id="modalProofSection" style="display:none; margin-top:16px;">
+                <span class="modal-label">Proof Photo (Completed)</span>
+                <img id="modalProofImage" src="" alt="Proof Photo" class="modal-proof-image">
+            </div>
+        </div>
+    </div>
+
     <script>
         document.getElementById("searchInput").addEventListener("keyup", function () {
             let filter = this.value.toLowerCase();
@@ -117,6 +177,45 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
                     row.style.display = row.innerText.toLowerCase().includes(filter) ? "" : "none";
                 }
             });
+        });
+
+        // MODAL LOGIC
+        const modal = document.getElementById("detailModal");
+        const closeBtn = document.getElementById("modalCloseBtn");
+
+        document.querySelectorAll(".view-detail-btn").forEach(btn => {
+            btn.addEventListener("click", function() {
+                document.getElementById("modalReportID").textContent = "Report #" + this.dataset.reportid;
+                document.getElementById("modalName").textContent = this.dataset.name;
+                document.getElementById("modalPhone").textContent = this.dataset.phone;
+                document.getElementById("modalEmail").textContent = this.dataset.email;
+                document.getElementById("modalTitle").textContent = this.dataset.title;
+                document.getElementById("modalDescription").textContent = this.dataset.description;
+                document.getElementById("modalLocation").textContent = this.dataset.location;
+
+                const statusBadge = document.getElementById("modalStatusBadge");
+                statusBadge.textContent = this.dataset.status;
+                statusBadge.className = "status-badge";
+                if (this.dataset.status === "Pending") statusBadge.classList.add("badge-pending");
+                if (this.dataset.status === "In Progress") statusBadge.classList.add("badge-inprogress");
+                if (this.dataset.status === "Completed") statusBadge.classList.add("badge-completed");
+
+                const proofSection = document.getElementById("modalProofSection");
+                const proofImage = document.getElementById("modalProofImage");
+                if (this.dataset.proof && this.dataset.proof !== "") {
+                    proofImage.src = this.dataset.proof;
+                    proofSection.style.display = "block";
+                } else {
+                    proofSection.style.display = "none";
+                }
+
+                modal.classList.add("active");
+            });
+        });
+
+        closeBtn.addEventListener("click", () => modal.classList.remove("active"));
+        modal.addEventListener("click", (e) => {
+            if (e.target === modal) modal.classList.remove("active");
         });
     </script>
 </body>

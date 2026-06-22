@@ -8,6 +8,7 @@ $success = "";
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim($_POST['name']);
     $email = trim($_POST['email']);
+    $phone = trim($_POST['phone']);
     $role = $_POST['role'];
     $password = $_POST['password'];
     $confirmPassword = $_POST['confirmPassword'];
@@ -46,9 +47,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $newId = generateNextId($conn, $table, $idCol, $prefix);
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
- 
-            $insert = $conn->prepare("INSERT INTO $table ($idCol, name, email, password) VALUES (?, ?, ?, ?)");
-            $insert->bind_param("ssss", $newId, $name, $email, $hashedPassword);
+
+            if ($table === 'user') {
+                // Only the 'user' table has a phone column
+                $insert = $conn->prepare("INSERT INTO $table ($idCol, name, email, phone, password) VALUES (?, ?, ?, ?, ?)");
+                $insert->bind_param("sssss", $newId, $name, $email, $phone, $hashedPassword);
+            } else {
+                $insert = $conn->prepare("INSERT INTO $table ($idCol, name, email, password) VALUES (?, ?, ?, ?)");
+                $insert->bind_param("ssss", $newId, $name, $email, $hashedPassword);
+            }
  
             if ($insert->execute()) {
                 $success = "Account created! Your ID is $newId. You can now log in.";
@@ -152,6 +159,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             name="email"
             placeholder="Enter your email"
             required>
+
+        <label>Phone Number</label>
+
+        <input
+            type="tel"
+            name="phone"
+            placeholder="Enter your phone number (e.g. 0123456789)"
+            pattern="[0-9]{10,15}"
+            required>
  
         <label>Register as</label>
  
@@ -234,4 +250,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </body>
  
 </html>
- 
