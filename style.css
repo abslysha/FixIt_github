@@ -805,6 +805,171 @@ tbody tr:hover {
 }
 
 /* =========================
+   TRACK STATUS DETAIL
+========================= */
+
+.track-header h2,
+.report-title {
+    font-family: 'Arial MT Pro', Arial, sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    color: #000000;
+    margin-bottom: 4px;
+}
+
+.report-status-text {
+    font-family: 'Arial MT Pro', Arial, sans-serif;
+    font-size: 14px;
+    color: #000000;
+    margin-bottom: 18px;
+}
+
+.report-detail-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 18px;
+}
+
+.detail-item {
+    font-family: 'Arial MT Pro', Arial, sans-serif;
+    font-size: 14px;
+    color: #000000;
+}
+
+.detail-label {
+    font-weight: bold;
+}
+
+.detail-value {
+    font-weight: normal;
+}
+
+.track-photo-section h3 {
+    font-family: 'Arial MT Pro', Arial, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    color: #000000;
+    margin-bottom: 10px;
+}
+
+.track-image {
+    width: 100%;
+    max-width: 420px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    display: block;
+}
+
+/* =========================
+   VIEW DETAIL MODAL
+========================= */
+
+.view-detail-btn {
+    background: var(--teal);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s;
+}
+
+.view-detail-btn:hover {
+    opacity: 0.85;
+}
+
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(26, 26, 46, 0.55);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-box {
+    background: white;
+    border-radius: var(--radius);
+    padding: 32px;
+    width: 90%;
+    max-width: 520px;
+    max-height: 85vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+}
+
+.modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: var(--text-muted);
+    cursor: pointer;
+    line-height: 1;
+}
+
+.modal-close:hover {
+    color: var(--text);
+}
+
+#modalReportID {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    color: var(--primary);
+    margin-bottom: 10px;
+}
+
+.modal-detail-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 20px;
+}
+
+.modal-detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.modal-label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+}
+
+.modal-value {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.modal-proof-image {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    margin-top: 8px;
+    display: block;
+}
+
+/* =========================
    RESPONSIVE
 ========================= */
 
@@ -852,171 +1017,6 @@ tbody tr:hover {
     .report-illustration {
         width: 100%;
         padding-top: 20px;
-    }
-
-    /* =========================
-   TRACK STATUS DETAIL
-========================= */
-
-    .track-header h2,
-    .report-title {
-        font-family: 'Arial MT Pro', Arial, sans-serif;
-        font-size: 20px;
-        font-weight: bold;
-        color: #000000;
-        margin-bottom: 4px;
-    }
-
-    .report-status-text {
-        font-family: 'Arial MT Pro', Arial, sans-serif;
-        font-size: 14px;
-        color: #000000;
-        margin-bottom: 18px;
-    }
-
-    .report-detail-grid {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        margin-bottom: 18px;
-    }
-
-    .detail-item {
-        font-family: 'Arial MT Pro', Arial, sans-serif;
-        font-size: 14px;
-        color: #000000;
-    }
-
-    .detail-label {
-        font-weight: bold;
-    }
-
-    .detail-value {
-        font-weight: normal;
-    }
-
-    .track-photo-section h3 {
-        font-family: 'Arial MT Pro', Arial, sans-serif;
-        font-size: 14px;
-        font-weight: bold;
-        color: #000000;
-        margin-bottom: 10px;
-    }
-
-    .track-image {
-        width: 100%;
-        max-width: 420px;
-        border-radius: var(--radius);
-        border: 1px solid var(--border);
-        display: block;
-    }
-
-    /* =========================
-   VIEW DETAIL MODAL
-========================= */
-
-    .view-detail-btn {
-        background: var(--teal);
-        color: white;
-        border: none;
-        border-radius: 6px;
-        padding: 6px 14px;
-        font-size: 12px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: opacity 0.15s;
-    }
-
-    .view-detail-btn:hover {
-        opacity: 0.85;
-    }
-
-    .modal-overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(26, 26, 46, 0.55);
-        z-index: 1000;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .modal-overlay.active {
-        display: flex;
-    }
-
-    .modal-box {
-        background: white;
-        border-radius: var(--radius);
-        padding: 32px;
-        width: 90%;
-        max-width: 520px;
-        max-height: 85vh;
-        overflow-y: auto;
-        position: relative;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
-    }
-
-    .modal-close {
-        position: absolute;
-        top: 16px;
-        right: 16px;
-        background: none;
-        border: none;
-        font-size: 24px;
-        color: var(--text-muted);
-        cursor: pointer;
-        line-height: 1;
-    }
-
-    .modal-close:hover {
-        color: var(--text);
-    }
-
-    #modalReportID {
-        font-family: 'Bebas Neue', sans-serif;
-        font-size: 24px;
-        color: var(--primary);
-        margin-bottom: 10px;
-    }
-
-    .modal-detail-grid {
-        display: flex;
-        flex-direction: column;
-        gap: 14px;
-        margin-top: 20px;
-    }
-
-    .modal-detail-item {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-    }
-
-    .modal-label {
-        font-size: 12px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        color: var(--text-muted);
-    }
-
-    .modal-value {
-        font-size: 15px;
-        font-weight: 600;
-        color: var(--text);
-    }
-
-    .modal-proof-image {
-        width: 100%;
-        max-width: 400px;
-        border-radius: 10px;
-        border: 1px solid var(--border);
-        margin-top: 8px;
-        display: block;
     }
 
 }
