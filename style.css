@@ -493,29 +493,29 @@ tbody tr:hover {
     padding: 4px 10px;
 
     border-radius: 20px;
-
     font-size: 12px;
     font-weight: 700;
 }
 
 .badge-completed {
-    background: #eaf7ee;
+    background: #b5eec6;
     color: var(--status-green);
 }
 
 .badge-pending {
-    background: #fff8e6;
+    background: #d4e5ba;
     color: var(--status-yellow);
 }
 
 .badge-inprogress {
-    background: #e7f1fb;
+    background: #bbd3ec;
     color: var(--status-blue);
 }
 
+/* FIXED */
 .badge-rejected {
-    background: #fbe7e7;
-    color: var(--status-red);
+    background: #fcd0d0;   
+    color: #a83232;        
 }
 
 /* =========================

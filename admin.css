@@ -458,18 +458,23 @@ tbody tr:hover{
 }
 
 .badge-completed{
-    background:#eaf7ee;
+    background:#7bf5a0;
     color:var(--status-green);
 }
 
 .badge-pending{
-    background:#fff8e6;
+    background:#efd081;
     color:var(--status-yellow);
 }
 
 .badge-inprogress{
-    background:#e7f1fb;
+    background:#7dbaf7;
     color:var(--status-blue);
+}
+
+.badge-rejected{
+    background:#fbcbc4;
+    color:#d9381e;
 }
 
 /* =========================
@@ -558,7 +563,9 @@ tbody tr:hover{
         width:100%;
     }
 
-    /* =========================
+}
+
+/* =========================
    ASSIGN TASK FORM
 ========================= */
 
@@ -619,6 +626,4 @@ tbody tr:hover{
 
 .submit-btn:hover{
     opacity:.9;
-}
-
 }
