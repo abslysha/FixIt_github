@@ -30,7 +30,7 @@ $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
 $offset = ($page - 1) * $perPage;
 $totalPages = max(1, ceil($totalReports / $perPage));
  
-$reportsStmt = $conn->prepare("SELECT reportID, title, description, location, status, DateReported FROM report WHERE userID = ? ORDER BY DateReported DESC LIMIT ? OFFSET ?");
+$reportsStmt = $conn->prepare("SELECT reportID, title, description, location, status, DateReported, proof_photo FROM report WHERE userID = ? ORDER BY DateReported DESC LIMIT ? OFFSET ?");
 $reportsStmt->bind_param("sii", $userID, $perPage, $offset);
 $reportsStmt->execute();
 $reportsResult = $reportsStmt->get_result();
@@ -44,6 +44,56 @@ $reportsResult = $reportsStmt->get_result();
  
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .task-thumb {
+            width: 44px;
+            height: 44px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid #e0e4ed;
+            cursor: pointer;
+        }
+        .no-attachment {
+            color: #7a869a;
+            font-size: 0.8rem;
+        }
+
+        /* Photo Popup Modal */
+        .photo-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .photo-modal-overlay.active {
+            display: flex;
+        }
+        .photo-modal-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+        }
+        .photo-modal-content img {
+            max-width: 90vw;
+            max-height: 90vh;
+            border-radius: 8px;
+            display: block;
+        }
+        .photo-modal-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+        }
+    </style>
 </head>
  
 <body>
@@ -182,6 +232,7 @@ $reportsResult = $reportsStmt->get_result();
                         <th>Location</th>
                         <th>Date</th>
                         <th>Status</th>
+                        <th>Proof Photo</th>
                     </tr>
                 </thead>
  
@@ -189,23 +240,33 @@ $reportsResult = $reportsStmt->get_result();
  
                     <?php if ($reportsResult->num_rows === 0): ?>
                         <tr>
-                            <td colspan="6" style="text-align:center; color:#7a869a;">No reports yet. <a href="reportdamage.php">Submit one now</a>.</td>
+                            <td colspan="7" style="text-align:center; color:#7a869a;">No reports yet. <a href="reportdamage.php">Submit one now</a>.</td>
                         </tr>
                     <?php else: ?>
                         <?php while ($report = $reportsResult->fetch_assoc()): ?>
-                            <tr onclick="window.location='trackstatus.php?id=<?php echo urlencode($report['reportID']); ?>'" style="cursor:pointer;">
-                                <td><?php echo htmlspecialchars($report['reportID']); ?></td>
-                                <td><?php echo htmlspecialchars($report['title']); ?></td>
-                                <td><?php echo htmlspecialchars($report['description']); ?></td>
-                                <td><?php echo htmlspecialchars($report['location']); ?></td>
-                                <td><?php echo date('d M Y', strtotime($report['DateReported'])); ?></td>
-                                <td>
+                            <?php $proof = $report['proof_photo'] ?? null; ?>
+                            <tr>
+                                <td onclick="window.location='trackstatus.php?id=<?php echo urlencode($report['reportID']); ?>'" style="cursor:pointer;"><?php echo htmlspecialchars($report['reportID']); ?></td>
+                                <td onclick="window.location='trackstatus.php?id=<?php echo urlencode($report['reportID']); ?>'" style="cursor:pointer;"><?php echo htmlspecialchars($report['title']); ?></td>
+                                <td onclick="window.location='trackstatus.php?id=<?php echo urlencode($report['reportID']); ?>'" style="cursor:pointer;"><?php echo htmlspecialchars($report['description']); ?></td>
+                                <td onclick="window.location='trackstatus.php?id=<?php echo urlencode($report['reportID']); ?>'" style="cursor:pointer;"><?php echo htmlspecialchars($report['location']); ?></td>
+                                <td onclick="window.location='trackstatus.php?id=<?php echo urlencode($report['reportID']); ?>'" style="cursor:pointer;"><?php echo date('d M Y', strtotime($report['DateReported'])); ?></td>
+                                <td onclick="window.location='trackstatus.php?id=<?php echo urlencode($report['reportID']); ?>'" style="cursor:pointer;">
                                     <?php
                                         $badgeClass = 'badge-pending';
                                         if ($report['status'] === 'In Progress') $badgeClass = 'badge-inprogress';
                                         if ($report['status'] === 'Completed') $badgeClass = 'badge-completed';
                                     ?>
                                     <span class="status-badge <?php echo $badgeClass; ?>"><?php echo $report['status']; ?></span>
+                                </td>
+                                <td>
+                                    <?php if ($report['status'] === 'Completed' && $proof && file_exists($proof)): ?>
+                                        <img src="<?php echo htmlspecialchars($proof); ?>" class="task-thumb" alt="Proof of completion" onclick="openPhotoModal('<?php echo htmlspecialchars($proof); ?>')">
+                                    <?php elseif ($report['status'] === 'Completed'): ?>
+                                        <span class="no-attachment">No proof</span>
+                                    <?php else: ?>
+                                        <span class="no-attachment">—</span>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endwhile; ?>
@@ -234,6 +295,28 @@ $reportsResult = $reportsStmt->get_result();
         </section>
  
     </main>
+
+    <!-- Photo Popup Modal -->
+    <div class="photo-modal-overlay" id="photoModalOverlay" onclick="closePhotoModal(event)">
+        <div class="photo-modal-content">
+            <span class="photo-modal-close" onclick="closePhotoModal(event)">&times;</span>
+            <img id="photoModalImg" src="" alt="Proof of completion full size">
+        </div>
+    </div>
+
+    <script>
+        function openPhotoModal(src) {
+            document.getElementById("photoModalImg").src = src;
+            document.getElementById("photoModalOverlay").classList.add("active");
+        }
+
+        function closePhotoModal(event) {
+            if (event.target.id === "photoModalOverlay" || event.target.classList.contains("photo-modal-close")) {
+                document.getElementById("photoModalOverlay").classList.remove("active");
+                document.getElementById("photoModalImg").src = "";
+            }
+        }
+    </script>
  
 </body>
 </html>
