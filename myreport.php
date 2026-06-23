@@ -107,6 +107,43 @@ $reportsResult = $reportsStmt->get_result();
             border-radius: 8px;
             display: block;
         }
+
+        /* Styling tambahan untuk butang View Detail (sama seperti design admin) */
+        .view-detail-btn {
+            background-color: #17a2b8;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .view-detail-btn:hover {
+            background-color: #138496;
+        }
+
+        /* CSS asal modal dikekalkan daripada dashboard admin */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 1000;
+            justify-content: center; align-items: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-box {
+            background: #fff; padding: 24px; border-radius: 12px;
+            width: 500px; max-width: 90%; position: relative;
+        }
+        .modal-close {
+            position: absolute; top: 15px; right: 20px;
+            background: none; border: none; font-size: 24px; cursor: pointer;
+        }
+        .modal-detail-grid {
+            display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 16px;
+        }
+        .modal-label { font-weight: bold; color: #555; display: block; font-size: 13px; }
+        .modal-value { color: #333; font-size: 15px; }
     </style>
 </head>
 
@@ -199,15 +236,14 @@ $reportsResult = $reportsStmt->get_result();
     <th>Date</th>
     <th>Status</th>
     <th>Proof</th>
-</tr>
+    <th>Detail</th> </tr>
 </thead>
 
 <tbody>
 
 <?php if ($reportsResult->num_rows === 0): ?>
 <tr>
-    <td colspan="7" style="text-align:center;">No reports yet</td>
-</tr>
+    <td colspan="8" style="text-align:center;">No reports yet</td> </tr>
 <?php else: ?>
 
 <?php while ($report = $reportsResult->fetch_assoc()): ?>
@@ -249,6 +285,19 @@ if ($report['status'] === 'Completed' && !empty($report['proof_photo']) && file_
 <?php endif; ?>
 </td>
 
+<td>
+    <button type="button" class="view-detail-btn"
+        data-reportid="<?php echo htmlspecialchars($report['reportID']); ?>"
+        data-title="<?php echo htmlspecialchars($report['title'] ?? ''); ?>"
+        data-description="<?php echo htmlspecialchars($report['description'] ?? ''); ?>"
+        data-location="<?php echo htmlspecialchars($report['location'] ?? ''); ?>"
+        data-status="<?php echo htmlspecialchars($report['status']); ?>"
+        data-date="<?php echo date('d M Y', strtotime($report['DateReported'])); ?>"
+        data-rejectreason="<?php echo htmlspecialchars($report['reject_reason'] ?? ''); ?>">
+        View Detail
+    </button>
+</td>
+
 </tr>
 <?php endwhile; ?>
 
@@ -260,6 +309,37 @@ if ($report['status'] === 'Completed' && !empty($report['proof_photo']) && file_
 </section>
 
 </main>
+
+<div id="detailModal" class="modal-overlay">
+    <div class="modal-box">
+        <button type="button" class="modal-close" id="modalCloseBtn">&times;</button>
+        <h2 id="modalReportID">Report #</h2>
+        <span id="modalStatusBadge" class="status-badge" style="display:inline-block; margin-bottom:15px;">Status</span>
+
+        <div class="modal-detail-grid">
+            <div class="modal-detail-item">
+                <span class="modal-label">Issue</span>
+                <span class="modal-value" id="modalTitle"></span>
+            </div>
+            <div class="modal-detail-item">
+                <span class="modal-label">Description</span>
+                <span class="modal-value" id="modalDescription"></span>
+            </div>
+            <div class="modal-detail-item">
+                <span class="modal-label">Location</span>
+                <span class="modal-value" id="modalLocation"></span>
+            </div>
+            <div class="modal-detail-item">
+                <span class="modal-label">Date Reported</span>
+                <span class="modal-value" id="modalDate"></span>
+            </div>
+            <div class="modal-detail-item" id="modalRejectSection" style="display:none;">
+                <span class="modal-label" style="color:#a83232;">Reject Reason</span>
+                <span class="modal-value" id="modalRejectReason" style="color:#a83232; font-weight:600;"></span>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="photo-modal-overlay" id="photoModalOverlay" onclick="closePhotoModal()">
     <div class="photo-modal-content">
@@ -277,6 +357,44 @@ if ($report['status'] === 'Completed' && !empty($report['proof_photo']) && file_
         document.getElementById("photoModalOverlay").classList.remove("active");
         document.getElementById("photoModalImg").src = "";
     }
+
+    // LOGIK UNTUK MODAL VIEW DETAIL USER
+    const detailModal = document.getElementById("detailModal");
+    const closeBtn = document.getElementById("modalCloseBtn");
+
+    document.querySelectorAll(".view-detail-btn").forEach(btn => {
+        btn.addEventListener("click", function() {
+            document.getElementById("modalReportID").textContent = "Report #" + this.dataset.reportid;
+            document.getElementById("modalTitle").textContent = this.dataset.title;
+            document.getElementById("modalDescription").textContent = this.dataset.description;
+            document.getElementById("modalLocation").textContent = this.dataset.location;
+            document.getElementById("modalDate").textContent = this.dataset.date;
+
+            const statusBadge = document.getElementById("modalStatusBadge");
+            statusBadge.textContent = this.dataset.status;
+            statusBadge.className = "status-badge";
+            if (this.dataset.status === "Pending") statusBadge.classList.add("badge-pending");
+            if (this.dataset.status === "In Progress") statusBadge.classList.add("badge-inprogress");
+            if (this.dataset.status === "Completed") statusBadge.classList.add("badge-completed");
+            if (this.dataset.status === "Rejected") statusBadge.classList.add("badge-rejected");
+
+            // Tunjukkan sebab kena reject kalau status Rejected
+            const rejectSection = document.getElementById("modalRejectSection");
+            if (this.dataset.status === "Rejected" && this.dataset.rejectreason !== "") {
+                document.getElementById("modalRejectReason").textContent = this.dataset.rejectreason;
+                rejectSection.style.display = "block";
+            } else {
+                rejectSection.style.display = "none";
+            }
+
+            detailModal.classList.add("active");
+        });
+    });
+
+    closeBtn.addEventListener("click", () => detailModal.classList.remove("active"));
+    detailModal.addEventListener("click", (e) => {
+        if (e.target === detailModal) detailModal.classList.remove("active");
+    });
 </script>
 
 </body>
