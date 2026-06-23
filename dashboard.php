@@ -173,7 +173,7 @@
                     labels: ['Pending', 'In Progress', 'Completed'],
                     datasets: [{
                         data: [pendingCount, progressCount, completedCount],
-                        backgroundColor: ['#f5c842', '#f5a0a0', '#7ecb7e'],
+                        backgroundColor: ['#f5c842', '#3a92e5', '#7ecb7e'],
                         borderWidth: 0
                     }]
                 },
