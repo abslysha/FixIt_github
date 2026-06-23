@@ -30,8 +30,9 @@ $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
 $offset = ($page - 1) * $perPage;
 $totalPages = max(1, ceil($totalReports / $perPage));
 
+// KEMASKINI: Ditambah 'proof_photo' ke dalam SELECT statement
 $reportsStmt = $conn->prepare("
-    SELECT reportID, title, description, location, status, DateReported, reject_reason
+    SELECT reportID, title, description, location, status, DateReported, reject_reason, proof_photo
     FROM report
     WHERE userID = ?
     ORDER BY DateReported DESC
@@ -66,6 +67,21 @@ $reportsResult = $reportsStmt->get_result();
             background: #ffe0e0;
             padding: 4px 8px;
             border-radius: 6px;
+        }
+
+        /* KEMASKINI: CSS untuk mencantikkan susunan gambar bukti */
+        .task-thumb {
+            width: 48px;
+            height: 48px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid #e0e4ed;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .task-thumb:hover {
+            transform: scale(1.05);
         }
     </style>
 </head>
@@ -199,8 +215,11 @@ if ($report['status'] === 'Rejected') $badgeClass = 'badge-rejected';
 </td>
 
 <td>
-<?php if ($report['status'] === 'Completed' && !empty($report['proof_photo'])): ?>
-    <img src="<?php echo htmlspecialchars($report['proof_photo']); ?>" width="45">
+<?php 
+// KEMASKINI: Logik memaparkan gambar bukti yang dihantar oleh maintenance
+if ($report['status'] === 'Completed' && !empty($report['proof_photo']) && file_exists($report['proof_photo'])): 
+?>
+    <img src="<?php echo htmlspecialchars($report['proof_photo']); ?>" class="task-thumb" alt="Proof" onclick="window.open(this.src, '_blank')">
 <?php else: ?>
     <span class="no-attachment">—</span>
 <?php endif; ?>
