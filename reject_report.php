@@ -12,8 +12,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Update status report kepada 'Rejected', simpan reason jika ada
+    // NOTA: reportID guna type "s" (string) sebab format macam R001, R002 - BUKAN integer murni
     $stmt = mysqli_prepare($conn, "UPDATE report SET status = 'Rejected', reject_reason = ? WHERE reportID = ?");
-    mysqli_stmt_bind_param($stmt, "si", $reason, $reportID);
+    mysqli_stmt_bind_param($stmt, "ss", $reason, $reportID);
 
     if (mysqli_stmt_execute($stmt)) {
         header("Location: report-data.php?rejected=1");
