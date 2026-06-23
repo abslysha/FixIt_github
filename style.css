@@ -503,7 +503,7 @@ tbody tr:hover {
 }
 
 .badge-pending {
-    background: #d4e5ba;
+    background: #ecef79;
     color: var(--status-yellow);
 }
 
