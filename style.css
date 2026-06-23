@@ -21,6 +21,7 @@
     --status-green: #28a745;
     --status-yellow: #f5a623;
     --status-blue: #1e6fb5;
+    --status-red: #a83232;
 
     --shadow: 0 4px 20px rgba(30, 58, 95, .10);
     --radius: 14px;
@@ -510,6 +511,11 @@ tbody tr:hover {
 .badge-inprogress {
     background: #e7f1fb;
     color: var(--status-blue);
+}
+
+.badge-rejected {
+    background: #fbe7e7;
+    color: var(--status-red);
 }
 
 /* =========================
@@ -1017,13 +1023,6 @@ tbody tr:hover {
     .report-illustration {
         width: 100%;
         padding-top: 20px;
-    }
-
-    /* Tambah ke dalam style.css yang sedia ada */
-
-    .badge-rejected {
-        background-color: #f8d7da;
-        color: #a83232;
     }
 
 }

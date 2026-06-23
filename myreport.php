@@ -256,6 +256,7 @@ $reportsResult = $reportsStmt->get_result();
                                         $badgeClass = 'badge-pending';
                                         if ($report['status'] === 'In Progress') $badgeClass = 'badge-inprogress';
                                         if ($report['status'] === 'Completed') $badgeClass = 'badge-completed';
+                                        if ($report['status'] === 'Rejected') $badgeClass = 'badge-rejected';
                                     ?>
                                     <span class="status-badge <?php echo $badgeClass; ?>"><?php echo $report['status']; ?></span>
                                 </td>
