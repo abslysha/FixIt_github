@@ -51,6 +51,12 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
             </div>
         </header>
 
+        <?php if(isset($_GET['rejected']) && $_GET['rejected'] == '1'): ?>
+            <div class="alert-success" style="background:#ffe0e0; color:#a83232; padding:10px 16px; border-radius:8px; margin-bottom:16px;">
+                Report has been marked as Rejected/Invalid.
+            </div>
+        <?php endif; ?>
+
         <section class="table-card">
             <div class="table-controls">
                 <div class="show-entries">
@@ -92,6 +98,7 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
                                 $badge_class = 'badge-pending';
                                 if($status == 'In Progress') $badge_class = 'badge-inprogress';
                                 if($status == 'Completed') $badge_class = 'badge-completed';
+                                if($status == 'Rejected') $badge_class = 'badge-rejected';
                                 ?>
                                 <span class="status-badge <?php echo $badge_class; ?>">
                                     <?php echo htmlspecialchars($status); ?>
@@ -165,6 +172,16 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
                 <span class="modal-label">Proof Photo (Completed)</span>
                 <img id="modalProofImage" src="" alt="Proof Photo" class="modal-proof-image">
             </div>
+
+            <div id="modalRejectSection" style="margin-top:20px;">
+                <form id="rejectForm" action="reject_report.php" method="POST" onsubmit="return confirmReject();">
+                    <input type="hidden" name="reportID" id="rejectReportID">
+                    <textarea name="reject_reason" id="rejectReason" placeholder="Reason for rejecting (optional)" style="width:100%; min-height:60px; margin-bottom:10px; padding:8px; border-radius:6px; border:1px solid #ccc;"></textarea>
+                    <button type="submit" id="rejectBtn" class="btn-reject" style="background:#a83232; color:#fff; border:none; padding:10px 18px; border-radius:6px; cursor:pointer;">
+                        Mark as Invalid / Rejected
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -199,6 +216,7 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
                 if (this.dataset.status === "Pending") statusBadge.classList.add("badge-pending");
                 if (this.dataset.status === "In Progress") statusBadge.classList.add("badge-inprogress");
                 if (this.dataset.status === "Completed") statusBadge.classList.add("badge-completed");
+                if (this.dataset.status === "Rejected") statusBadge.classList.add("badge-rejected");
 
                 const proofSection = document.getElementById("modalProofSection");
                 const proofImage = document.getElementById("modalProofImage");
@@ -209,6 +227,17 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
                     proofSection.style.display = "none";
                 }
 
+                // Set hidden reportID for reject form
+                document.getElementById("rejectReportID").value = this.dataset.reportid;
+
+                // Hide reject section/button if already rejected or completed
+                const rejectSection = document.getElementById("modalRejectSection");
+                if (this.dataset.status === "Rejected" || this.dataset.status === "Completed") {
+                    rejectSection.style.display = "none";
+                } else {
+                    rejectSection.style.display = "block";
+                }
+
                 modal.classList.add("active");
             });
         });
@@ -217,6 +246,10 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
         modal.addEventListener("click", (e) => {
             if (e.target === modal) modal.classList.remove("active");
         });
+
+        function confirmReject() {
+            return confirm("Are you sure you want to mark this report as Rejected/Invalid?");
+        }
     </script>
 </body>
 </html>

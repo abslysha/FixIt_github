@@ -1019,4 +1019,11 @@ tbody tr:hover {
         padding-top: 20px;
     }
 
+    /* Tambah ke dalam style.css yang sedia ada */
+
+    .badge-rejected {
+        background-color: #f8d7da;
+        color: #a83232;
+    }
+
 }
