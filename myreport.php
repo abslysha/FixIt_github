@@ -30,7 +30,6 @@ $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
 $offset = ($page - 1) * $perPage;
 $totalPages = max(1, ceil($totalReports / $perPage));
 
-// KEMASKINI: Ditambah 'proof_photo' ke dalam SELECT statement
 $reportsStmt = $conn->prepare("
     SELECT reportID, title, description, location, status, DateReported, reject_reason, proof_photo
     FROM report
@@ -69,7 +68,6 @@ $reportsResult = $reportsStmt->get_result();
             border-radius: 6px;
         }
 
-        /* KEMASKINI: CSS untuk mencantikkan susunan gambar bukti */
         .task-thumb {
             width: 48px;
             height: 48px;
@@ -82,6 +80,32 @@ $reportsResult = $reportsStmt->get_result();
         
         .task-thumb:hover {
             transform: scale(1.05);
+        }
+
+        /* ===== KEMASKINI: CSS untuk Image Popup Modal ===== */
+        .photo-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .photo-modal-overlay.active {
+            display: flex;
+        }
+        .photo-modal-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+        }
+        .photo-modal-content img {
+            max-width: 90vw;
+            max-height: 90vh;
+            border-radius: 8px;
+            display: block;
         }
     </style>
 </head>
@@ -216,10 +240,10 @@ if ($report['status'] === 'Rejected') $badgeClass = 'badge-rejected';
 
 <td>
 <?php 
-// KEMASKINI: Logik memaparkan gambar bukti yang dihantar oleh maintenance
+// KEMASKINI: onclick sekarang memanggil fungsi openPhotoModal()
 if ($report['status'] === 'Completed' && !empty($report['proof_photo']) && file_exists($report['proof_photo'])): 
 ?>
-    <img src="<?php echo htmlspecialchars($report['proof_photo']); ?>" class="task-thumb" alt="Proof" onclick="window.open(this.src, '_blank')">
+    <img src="<?php echo htmlspecialchars($report['proof_photo']); ?>" class="task-thumb" alt="Proof" onclick="openPhotoModal('<?php echo htmlspecialchars($report['proof_photo']); ?>')">
 <?php else: ?>
     <span class="no-attachment">—</span>
 <?php endif; ?>
@@ -236,6 +260,24 @@ if ($report['status'] === 'Completed' && !empty($report['proof_photo']) && file_
 </section>
 
 </main>
+
+<div class="photo-modal-overlay" id="photoModalOverlay" onclick="closePhotoModal()">
+    <div class="photo-modal-content">
+        <img id="photoModalImg" src="" alt="Proof Full Size">
+    </div>
+</div>
+
+<script>
+    function openPhotoModal(src) {
+        document.getElementById("photoModalImg").src = src;
+        document.getElementById("photoModalOverlay").classList.add("active");
+    }
+
+    function closePhotoModal() {
+        document.getElementById("photoModalOverlay").classList.remove("active");
+        document.getElementById("photoModalImg").src = "";
+    }
+</script>
 
 </body>
 </html>
