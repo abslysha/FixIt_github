@@ -514,8 +514,8 @@ tbody tr:hover {
 
 /* FIXED */
 .badge-rejected {
-    background: #fcd0d0;   
-    color: #a83232;        
+    background: #fcd0d0;
+    color: #a83232;
 }
 
 /* =========================
@@ -1023,6 +1023,35 @@ tbody tr:hover {
     .report-illustration {
         width: 100%;
         padding-top: 20px;
+    }
+
+    /* === NEW Report Tag === */
+    .new-tag {
+        display: inline-block;
+        background-color: #ff4d4f;
+        color: #fff;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        padding: 2px 6px;
+        border-radius: 10px;
+        margin-left: 6px;
+        vertical-align: middle;
+        animation: pulseNewTag 1.5s infinite;
+    }
+
+    @keyframes pulseNewTag {
+        0% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 0.6;
+        }
+
+        100% {
+            opacity: 1;
+        }
     }
 
 }
