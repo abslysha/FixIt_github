@@ -1,5 +1,5 @@
 <?php
-require 'auth_admin.php';
+require 'auth_admin.php'; // Fail ini wajib ada session_start() & semakan role admin
 require 'db_connect.php';
 
 // JOIN dengan table user untuk dapatkan nama dan phone
@@ -11,9 +11,9 @@ $all_reports = mysqli_query($conn, "
 ");
 $total_count = mysqli_num_rows($all_reports);
 
-// Count how many reports still need admin attention (not yet viewed, not yet assigned, still Pending)
+// FIXED: Removed the missing 'is_viewed' column reference to prevent SQL syntax crash
 // Used to drive the notification dot on the bell icon — consistent dengan dashboard.php
-$new_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM report WHERE (is_viewed = 0 OR is_viewed IS NULL) AND (staffID IS NULL OR staffID = '') AND status = 'Pending'");
+$new_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM report WHERE status = 'Pending' AND (staffID IS NULL OR staffID = '')");
 $new_reports_count = mysqli_fetch_assoc($new_query)['total'] ?? 0;
 
 $admin_name = $_SESSION['name'] ?? 'Admin';
@@ -97,10 +97,10 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
                     <?php if($total_count > 0): ?>
                         <?php while($row = mysqli_fetch_assoc($all_reports)): ?>
                         <?php
-                            // Tentukan sama ada report ni masih "baru" — belum di-view DAN belum di-assign
-                            $is_viewed = !empty($row['is_viewed']) && $row['is_viewed'] == 1;
+                            // FIXED: Changed logic to identify new reports based on empty staffID and status = Pending
                             $is_assigned = !empty($row['staffID']);
-                            $show_new_tag = !$is_viewed && !$is_assigned;
+                            $is_pending = ($row['status'] ?? 'Pending') === 'Pending';
+                            $show_new_tag = !$is_assigned && $is_pending;
                         ?>
                         <tr id="row-<?php echo $row['reportID']; ?>">
                             <td>#<?php echo $row['reportID']; ?></td>
@@ -153,7 +153,6 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
         </section>
     </main>
 
-    <!-- MODAL: Report Detail -->
     <div id="detailModal" class="modal-overlay">
         <div class="modal-box">
             <button type="button" class="modal-close" id="modalCloseBtn">&times;</button>
@@ -209,7 +208,6 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
         document.getElementById("searchInput").addEventListener("keyup", function () {
             let filter = this.value.toLowerCase();
             document.querySelectorAll("#reportTable tr").forEach(row => {
-                
                 if(row.cells.length > 1) {
                     row.style.display = row.innerText.toLowerCase().includes(filter) ? "" : "none";
                 }
@@ -247,7 +245,6 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
                     proofSection.style.display = "none";
                 }
 
-                // Papar tag NEW dalam modal jika report ni masih belum di-view/assign
                 const newBadge = document.getElementById("modalNewBadge");
                 const isNew = this.dataset.isnew === "1";
                 newBadge.style.display = isNew ? "inline-block" : "none";
@@ -264,27 +261,6 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
                 }
 
                 modal.classList.add("active");
-
-                // === Mark report sebagai "viewed" supaya tag NEW hilang lain kali ===
-                if (isNew) {
-                    const reportID = this.dataset.reportid;
-
-                    fetch("mark_viewed.php", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                        body: "reportID=" + encodeURIComponent(reportID)
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.success) {
-                            // Update dataset supaya kalau admin buka modal ni lagi (tanpa refresh page), tag tak papar semula
-                            this.dataset.isnew = "0";
-                        } else {
-                            console.error("Gagal mark report as viewed:", data.message);
-                        }
-                    })
-                    .catch(err => console.error("Error:", err));
-                }
             });
         });
 
