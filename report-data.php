@@ -86,9 +86,17 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
                 <tbody id="reportTable">
                     <?php if($total_count > 0): ?>
                         <?php while($row = mysqli_fetch_assoc($all_reports)): ?>
-                        <tr>
+                        <?php
+                            // Tentukan sama ada report ni masih "baru" — belum di-view DAN belum di-assign
+                            $is_viewed = !empty($row['is_viewed']) && $row['is_viewed'] == 1;
+                            $is_assigned = !empty($row['staffID']);
+                            $show_new_tag = !$is_viewed && !$is_assigned;
+                        ?>
+                        <tr id="row-<?php echo $row['reportID']; ?>">
                             <td>#<?php echo $row['reportID']; ?></td>
-                            <td><strong><?php echo htmlspecialchars($row['title'] ?? ''); ?></strong></td>
+                            <td>
+                                <strong><?php echo htmlspecialchars($row['title'] ?? ''); ?></strong>
+                            </td>
                             <td><?php echo htmlspecialchars($row['description'] ?? ''); ?></td>
                             <td><?php echo htmlspecialchars($row['location'] ?? ''); ?></td>
                             <td><?php echo isset($row['DateReported']) ? date('Y-m-d', strtotime($row['DateReported'])) : date('Y-m-d'); ?></td>
@@ -114,7 +122,8 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
                                     data-description="<?php echo htmlspecialchars($row['description'] ?? ''); ?>"
                                     data-location="<?php echo htmlspecialchars($row['location'] ?? ''); ?>"
                                     data-status="<?php echo htmlspecialchars($status); ?>"
-                                    data-proof="<?php echo htmlspecialchars($row['proof_photo'] ?? ''); ?>">
+                                    data-proof="<?php echo htmlspecialchars($row['proof_photo'] ?? ''); ?>"
+                                    data-isnew="<?php echo $show_new_tag ? '1' : '0'; ?>">
                                     View Detail
                                 </button>
                             </td>
@@ -140,6 +149,7 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
             <button type="button" class="modal-close" id="modalCloseBtn">&times;</button>
             <h2 id="modalReportID">Report #</h2>
             <span id="modalStatusBadge" class="status-badge">Status</span>
+            <span id="modalNewBadge" class="status-badge badge-new" style="display:none;">NEW</span>
 
             <div class="modal-detail-grid">
                 <div class="modal-detail-item">
@@ -227,6 +237,11 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
                     proofSection.style.display = "none";
                 }
 
+                // Papar tag NEW dalam modal jika report ni masih belum di-view/assign
+                const newBadge = document.getElementById("modalNewBadge");
+                const isNew = this.dataset.isnew === "1";
+                newBadge.style.display = isNew ? "inline-block" : "none";
+
                 // Set hidden reportID for reject form
                 document.getElementById("rejectReportID").value = this.dataset.reportid;
 
@@ -239,6 +254,27 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
                 }
 
                 modal.classList.add("active");
+
+                // === Mark report sebagai "viewed" supaya tag NEW hilang lain kali ===
+                if (isNew) {
+                    const reportID = this.dataset.reportid;
+
+                    fetch("mark_viewed.php", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                        body: "reportID=" + encodeURIComponent(reportID)
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Update dataset supaya kalau admin buka modal ni lagi (tanpa refresh page), tag tak papar semula
+                            this.dataset.isnew = "0";
+                        } else {
+                            console.error("Gagal mark report as viewed:", data.message);
+                        }
+                    })
+                    .catch(err => console.error("Error:", err));
+                }
             });
         });
 
