@@ -20,10 +20,9 @@ $pending_pct = $total_reports > 0 ? round(($pending_reports / $total_reports) * 
 $progress_pct = $total_reports > 0 ? round(($progress_reports / $total_reports) * 100) : 0;
 $completed_pct = $total_reports > 0 ? round(($completed_reports / $total_reports) * 100) : 0;
 
-// Count how many reports still need admin attention (not yet viewed, not yet assigned,
-// and still Pending — Rejected/Completed reports don't need a notification)
-// Used to drive the notification dot on the bell icon
-$new_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM report WHERE (is_viewed = 0 OR is_viewed IS NULL) AND (staffID IS NULL OR staffID = '') AND status = 'Pending'");
+// FIXED: Removed the missing 'is_viewed' column reference to prevent SQL syntax crash
+// Counts reports that are still Pending and do not have an assigned staff member yet
+$new_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM report WHERE (staffID IS NULL OR staffID = '') AND status = 'Pending'");
 $new_reports_count = mysqli_fetch_assoc($new_query)['total'] ?? 0;
 
 // Fetch top 5 recent reports sorted by your true primary column 'reportID'
@@ -58,7 +57,8 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
             <a href="assign-task.php" class="nav-item">Assign Task</a>
         </nav>
         <div class="sidebar-spacer"></div>
-        <a href="logout.php" class="nav-item">Logout</a> </aside>
+        <a href="logout.php" class="nav-item">Logout</a>
+    </aside>
 
     <main class="main">
         <header class="topbar">
