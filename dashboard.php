@@ -15,18 +15,13 @@ $progress_reports = mysqli_fetch_assoc($progress_query)['total'] ?? 0;
 $completed_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM report WHERE status='Completed'");
 $completed_reports = mysqli_fetch_assoc($completed_query)['total'] ?? 0;
 
-// Calculate percentages safely to avoid division by zero
-$pending_pct = $total_reports > 0 ? round(($pending_reports / $total_reports) * 100) : 0;
-$progress_pct = $total_reports > 0 ? round(($progress_reports / $total_reports) * 100) : 0;
-$completed_pct = $total_reports > 0 ? round(($completed_reports / $total_reports) * 100) : 0;
-
 // FIXED: Removed the missing 'is_viewed' column reference to prevent SQL syntax crash
 // Counts reports that are still Pending and do not have an assigned staff member yet
 $new_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM report WHERE (staffID IS NULL OR staffID = '') AND status = 'Pending'");
 $new_reports_count = mysqli_fetch_assoc($new_query)['total'] ?? 0;
 
-// Fetch top 5 recent reports sorted by your true primary column 'reportID'
-$recent_reports = mysqli_query($conn, "SELECT * FROM report ORDER BY reportID DESC LIMIT 5");
+// Fetch ALL reports for the data table view, sorted descendingly by primary key
+$all_reports = mysqli_query($conn, "SELECT * FROM report ORDER BY reportID DESC");
 
 // Extract dynamic avatar letter
 $admin_name = $_SESSION['name'] ?? 'Admin';
@@ -37,7 +32,7 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FixIt - Admin Dashboard</title>
+    <title>FixIt - Report Data</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -51,8 +46,8 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
             <span></span><span></span><span></span>
         </button>
         <nav>
-            <a href="dashboard.php" class="nav-item active">Dashboard</a>
-            <a href="report-data.php" class="nav-item">Report Data</a>
+            <a href="dashboard.php" class="nav-item">Dashboard</a>
+            <a href="report-data.php" class="nav-item active">Report Data</a>
             <a href="user-management.php" class="nav-item">User Management</a>
             <a href="assign-task.php" class="nav-item">Assign Task</a>
         </nav>
@@ -62,7 +57,7 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
 
     <main class="main">
         <header class="topbar">
-            <h1 class="topbar-title"><em>ADMIN</em> DASHBOARD</h1>
+            <h1 class="topbar-title"><em>REPORT</em> DATA</h1>
             <div class="topbar-actions">
                 <button class="icon-btn">
                     🔔
@@ -101,28 +96,13 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
             </div>
         </section>
 
-        <section class="charts-row">
-            <div class="card">
-                <h3 class="card-title">Report Status Breakdown</h3>
-                <canvas id="statusPieChart" style="max-height: 220px;"></canvas>
-            </div>
-            <div class="card">
-                <h3 class="card-title">Report Status Overview</h3>
-                <div class="status-summary">
-                    <div class="legend-item"><span class="legend-dot yellow"></span>Pending (<?php echo $pending_pct; ?>%)</div>
-                    <div class="legend-item"><span class="legend-dot pink"></span>In Progress (<?php echo $progress_pct; ?>%)</div>
-                    <div class="legend-item"><span class="legend-dot green"></span>Completed (<?php echo $completed_pct; ?>%)</div>
-                </div>
-            </div>
-        </section>
-
-        <section class="table-card">
+        <section class="table-card" style="margin-top: 24px;">
             <div class="table-controls">
                 <div class="show-entries">
-                    Show <select><option>5</option></select> entries
+                    Show <select><option>All</option></select> entries
                 </div>
                 <div class="search-box">
-                    <input type="text" id="dashboardSearch" placeholder="Search...">
+                    <input type="text" id="reportSearch" placeholder="Search reports...">
                 </div>
             </div>
             <table>
@@ -137,65 +117,52 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
                         <th>Status</th>
                     </tr>
                 </thead>
-                <tbody id="dashboardTable">
-                    <?php while($row = mysqli_fetch_assoc($recent_reports)): ?>
-                    <tr>
-                        <td>#<?php echo $row['reportID']; ?></td>
-                        <td>
-                            <strong><?php echo htmlspecialchars($row['title'] ?? ''); ?></strong>
-                        </td>
-                        <td><?php echo htmlspecialchars($row['description'] ?? ''); ?></td>
-                        <td><?php echo htmlspecialchars($row['location'] ?? ''); ?></td>
-                        <td><?php echo htmlspecialchars($row['staffID'] ?? 'Unassigned'); ?></td>
-                        <td><?php echo isset($row['DateReported']) ? date('Y-m-d', strtotime($row['DateReported'])) : date('Y-m-d'); ?></td>
-                        <td>
-                            <?php 
-                            $status = $row['status'] ?? 'Pending';
-                            $badge_class = 'badge-pending';
-                            if($status == 'In Progress') $badge_class = 'badge-inprogress';
-                            if($status == 'Completed') $badge_class = 'badge-completed';
-                            if($status == 'Rejected')    $badge_class = 'badge-rejected';
-                            ?>
-                            <span class="status-badge <?php echo $badge_class; ?>">
-                                <?php echo htmlspecialchars($status); ?>
-                            </span>
-                        </td>
-                    </tr>
-                    <?php endwhile; ?>
+                <tbody id="reportTable">
+                    <?php if (mysqli_num_rows($all_reports) > 0): ?>
+                        <?php while($row = mysqli_fetch_assoc($all_reports)): ?>
+                        <tr>
+                            <td>#<?php echo $row['reportID']; ?></td>
+                            <td>
+                                <strong><?php echo htmlspecialchars($row['title'] ?? ''); ?></strong>
+                            </td>
+                            <td><?php echo htmlspecialchars($row['description'] ?? ''); ?></td>
+                            <td><?php echo htmlspecialchars($row['location'] ?? ''); ?></td>
+                            <td><?php echo htmlspecialchars($row['staffID'] ?? 'Unassigned'); ?></td>
+                            <td><?php echo isset($row['DateReported']) ? date('Y-m-d', strtotime($row['DateReported'])) : date('Y-m-d'); ?></td>
+                            <td>
+                                <?php 
+                                $status = $row['status'] ?? 'Pending';
+                                $badge_class = 'badge-pending';
+                                if($status == 'In Progress') $badge_class = 'badge-inprogress';
+                                if($status == 'Completed') $badge_class = 'badge-completed';
+                                if($status == 'Rejected')    $badge_class = 'badge-rejected';
+                                ?>
+                                <span class="status-badge <?php echo $badge_class; ?>">
+                                    <?php echo htmlspecialchars($status); ?>
+                                </span>
+                            </td>
+                        </tr>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="7" style="text-align: center; padding: 20px;">No report records found.</td>
+                        </tr>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </section>
     </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        document.getElementById("dashboardSearch").addEventListener("keyup", function () {
+        // Client-side search configuration
+        document.getElementById("reportSearch").addEventListener("keyup", function () {
             let filter = this.value.toLowerCase();
-            document.querySelectorAll("#dashboardTable tr").forEach(row => {
-                row.style.display = row.innerText.toLowerCase().includes(filter) ? "" : "none";
-            });
-        });
-
-        const pendingCount = <?php echo $pending_reports; ?>;
-        const progressCount = <?php echo $progress_reports; ?>;
-        const completedCount = <?php echo $completed_reports; ?>;
-
-        new Chart(document.getElementById('statusPieChart'), {
-            type: 'pie',
-            data: {
-                labels: ['Pending', 'In Progress', 'Completed'],
-                datasets: [{
-                    data: [pendingCount, progressCount, completedCount],
-                    backgroundColor: ['#f5c842', '#3a92e5', '#7ecb7e'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { position: 'bottom' }
+            document.querySelectorAll("#reportTable tr").forEach(row => {
+                // Ignore the placeholder empty row if it exists
+                if(row.cells.length > 1) {
+                    row.style.display = row.innerText.toLowerCase().includes(filter) ? "" : "none";
                 }
-            }
+            });
         });
     </script>
 </body>
