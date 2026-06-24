@@ -20,9 +20,10 @@ $pending_pct = $total_reports > 0 ? round(($pending_reports / $total_reports) * 
 $progress_pct = $total_reports > 0 ? round(($progress_reports / $total_reports) * 100) : 0;
 $completed_pct = $total_reports > 0 ? round(($completed_reports / $total_reports) * 100) : 0;
 
-// Count how many reports are "new" (reported within the last 24 hours)
+// Count how many reports still need admin attention (not yet viewed, not yet assigned,
+// and still Pending — Rejected/Completed reports don't need a notification)
 // Used to drive the notification dot on the bell icon
-$new_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM report WHERE DateReported >= NOW() - INTERVAL 1 DAY");
+$new_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM report WHERE (is_viewed = 0 OR is_viewed IS NULL) AND (staffID IS NULL OR staffID = '') AND status = 'Pending'");
 $new_reports_count = mysqli_fetch_assoc($new_query)['total'] ?? 0;
 
 // Fetch top 5 recent reports sorted by your true primary column 'reportID'
@@ -138,22 +139,10 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
                 </thead>
                 <tbody id="dashboardTable">
                     <?php while($row = mysqli_fetch_assoc($recent_reports)): ?>
-                    <?php
-                        // Tentukan sama ada report ni "baru" (dilaporkan dalam 24 jam terakhir)
-                        $is_new = false;
-                        if (!empty($row['DateReported'])) {
-                            $reported_time = strtotime($row['DateReported']);
-                            $hours_diff = (time() - $reported_time) / 3600;
-                            $is_new = $hours_diff <= 24;
-                        }
-                    ?>
                     <tr>
                         <td>#<?php echo $row['reportID']; ?></td>
                         <td>
                             <strong><?php echo htmlspecialchars($row['title'] ?? ''); ?></strong>
-                            <?php if ($is_new): ?>
-                                <span class="new-tag">NEW</span>
-                            <?php endif; ?>
                         </td>
                         <td><?php echo htmlspecialchars($row['description'] ?? ''); ?></td>
                         <td><?php echo htmlspecialchars($row['location'] ?? ''); ?></td>

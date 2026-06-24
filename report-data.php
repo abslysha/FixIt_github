@@ -11,6 +11,11 @@ $all_reports = mysqli_query($conn, "
 ");
 $total_count = mysqli_num_rows($all_reports);
 
+// Count how many reports still need admin attention (not yet viewed, not yet assigned, still Pending)
+// Used to drive the notification dot on the bell icon — consistent dengan dashboard.php
+$new_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM report WHERE (is_viewed = 0 OR is_viewed IS NULL) AND (staffID IS NULL OR staffID = '') AND status = 'Pending'");
+$new_reports_count = mysqli_fetch_assoc($new_query)['total'] ?? 0;
+
 $admin_name = $_SESSION['name'] ?? 'Admin';
 $avatar_letter = strtoupper(substr($admin_name, 0, 1));
 ?>
@@ -46,7 +51,12 @@ $avatar_letter = strtoupper(substr($admin_name, 0, 1));
         <header class="topbar">
             <h1 class="topbar-title">REPORT DATA</h1>
             <div class="topbar-actions">
-                <button class="icon-btn">🔔<span class="notif-dot"></span></button>
+                <button class="icon-btn">
+                    🔔
+                    <?php if ($new_reports_count > 0): ?>
+                        <span class="notif-dot"></span>
+                    <?php endif; ?>
+                </button>
                 <div class="avatar"><?php echo $avatar_letter; ?></div>
             </div>
         </header>
